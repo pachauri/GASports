@@ -52,8 +52,15 @@ repositories {
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
-    // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-eureka-server
+    compile("org.springframework.boot:spring-boot-starter-security")
+    compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.2'
+    compile 'org.springframework.boot:spring-boot-starter-data-mongodb'
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-eureka-server', version: '1.4.4.RELEASE'
+    // https://mvnrepository.com/artifact/com.auth0/auth0-spring-security-api
+    compile group: 'com.auth0', name: 'auth0-spring-security-api', version: '1.0.0-rc.3'
+
+
+
 
 
     testCompile("junit:junit")
