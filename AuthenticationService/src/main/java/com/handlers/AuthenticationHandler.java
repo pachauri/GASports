@@ -13,10 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,6 +49,7 @@ public class AuthenticationHandler {
         return new APIResponse("User Registration Successful.",null,user);
     }
 
+    @CrossOrigin
     @PostMapping(LOGIN_URL)
     public APIResponse login(@RequestBody ApplicationUser applicationUser,HttpServletRequest req,
                              HttpServletResponse res) {
