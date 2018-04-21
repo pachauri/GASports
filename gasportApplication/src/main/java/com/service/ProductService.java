@@ -12,8 +12,8 @@ public interface ProductService {
     APIResponse addCategory(ProductParentDTO productParentDTO);
 
     APIResponse addSubCategory(CategoryDTO categoryDTO);
-//
+
     APIResponse addBrand(SubCategoryDTO subCategoryDTO);
-//
-//    APIResponse addProductDetails(ProductDTO productDTO);
+
+   APIResponse addProductDetails(BrandDTO brandDTO);
 }

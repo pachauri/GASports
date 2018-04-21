@@ -24,8 +24,8 @@ public interface CategoryRepository extends MongoRepository<Category,Long>{
     Category findCategoryBySubCategoryUid(String uid);
 
     @Query("{ 'subCategories.brandList.uid' : ?0 }")
-    Category findProductByBrandUid(String brandId);
+    Category findProductCategoryByBrandUid(String brandId);
 
 //    @Query(value="{ 'subCategories.brandList.uid' : ?0 }",fields="{ 'subCategories.brandList' : 1}")
-//    List<Brand> findProductByBrandUid(String brandId);
+//    List<Brand> findProductCategoryByBrandUid(String brandId);
 }

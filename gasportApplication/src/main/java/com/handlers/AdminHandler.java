@@ -1,6 +1,7 @@
 package com.handlers;
 
 import com.Mappings;
+import com.db.Brand;
 import com.dto.*;
 import com.response.APIResponse;
 import com.service.ProductService;
@@ -40,11 +41,11 @@ public class AdminHandler {
         return productService.addBrand(subCategoryDTO);
     }
 
-//    @PostMapping(Mappings.ADD_PRODUCT_DETAILS)
-//    public APIResponse addProductDetails(@RequestBody ProductDTO productDTO){
-//        logger.info("Adding ProductParent Details [{}]",productDTO);
-//        return productService.addProductDetails(productDTO);
-//    }
+    @PostMapping(Mappings.ADD_PRODUCT_DETAILS)
+    public APIResponse addProductDetails(@RequestBody BrandDTO brandDTO){
+        logger.info("Adding ProductParent Details [{}]",brandDTO);
+        return productService.addProductDetails(brandDTO);
+    }
 
 
 }

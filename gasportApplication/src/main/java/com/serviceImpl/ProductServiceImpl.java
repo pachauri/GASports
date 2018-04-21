@@ -3,6 +3,7 @@ package com.serviceImpl;
 import com.ExceptionHandler.GASportsException;
 import com.db.Brand;
 import com.db.Category;
+import com.db.ProductDetails;
 import com.db.SubCategory;
 import com.dto.*;
 import com.repository.CategoryRepository;
@@ -77,7 +78,7 @@ public class ProductServiceImpl implements ProductService {
     public APIResponse addBrand(SubCategoryDTO subCategoryDTO) {
 
         if(subCategoryDTO == null || CollectionUtils.isEmpty(subCategoryDTO.getBrands())){
-            throw new GASportsException("Can't add Empty Sub Categories");
+            throw new GASportsException("Can't add Empty Brands");
         }
         Category category = categoryRepository.findCategoryBySubCategoryUid(subCategoryDTO.getUid());
 
@@ -92,7 +93,12 @@ public class ProductServiceImpl implements ProductService {
         if(optionalSubCategory.isPresent()){
             subCategory = optionalSubCategory.get();
         }
-        List<Brand> brandList = new ArrayList<Brand>();
+
+        List<Brand> brandList = subCategory.getBrandList();
+
+        if(CollectionUtils.isEmpty(brandList)){
+            brandList = new ArrayList<Brand>();
+        }
 
         for (BrandDTO dto : subCategoryDTO.getBrands()) {
             Brand brand = new Brand();
@@ -101,44 +107,48 @@ public class ProductServiceImpl implements ProductService {
             brandList.add(brand);
         }
         subCategory.setBrandList(brandList);
-       // subCategories.add(subCategory);
-       // category.setSubCategories(subCategories);
         category = categoryRepository.save(category);
         return new APIResponse("ProductParent Subcategory added successfully",category);
     }
 
-//    @Override
-//    public APIResponse addProductDetails(ProductDTO productDTO) {
-//        ProductParent product = categoryRepository.findProductByBrandUid(productDTO.getBrandId());
-//        if(product == null){
-//            throw  new GASportsException("Brand not found by brandId.");
-//        }
-//        Optional<Brand> brandOptional = product.getSubCategories().stream().flatMap(subCategory -> subCategory.getBrandList().stream())
-//                .filter(brand -> brand.getUid().equals(productDTO.getBrandId())).findFirst();
-//
-//        Brand brand = null;
-//
-//        if(brandOptional.isPresent()){
-//            brand = brandOptional.get();
-//        }
-//
-//        List<ProductDetails> productDetails = brand.getProductDetails();
-//        if(productDetails == null || productDetails.size() < 1){
-//            productDetails = new ArrayList<ProductDetails>();
-//        }
-//        List<ProductDetailsDTO> productDetailsDTOS = productDTO.getProductDetailsDTOS();
-//        if(productDetailsDTOS != null && !productDetailsDTOS.isEmpty() && productDetailsDTOS.size() > 0){
-//            for (ProductDetailsDTO productDetailsDTO : productDetailsDTOS) {
-//                ProductDetails producDetail = new ProductDetails();
-//                producDetail.setUid(GASportsUtils.getUid());
-//                producDetail.setName(productDetailsDTO.getName());
-//                producDetail.setPrice(productDetailsDTO.getPrice());
-//                productDetails.add(producDetail);
-//            }
-//        }
-//        brand.setProductDetails(productDetails);categoryRepository.save(product);
-//        return new APIResponse("ProductParent Details added successfully.",product);
-//    }
+    @Override
+    public APIResponse addProductDetails(BrandDTO brandDTO) {
+        if(brandDTO == null || CollectionUtils.isEmpty(brandDTO.getProducts())){
+            throw new GASportsException("Can't add Empty Product Details");
+        }
+
+        Category category = categoryRepository.findProductCategoryByBrandUid(brandDTO.getUid());
+        if(category == null){
+            throw  new GASportsException("Brand not found by brandId.");
+        }
+
+        Optional<Brand> brandOptional = category.getSubCategories().stream()
+                                                 .flatMap(subCategory -> subCategory.getBrandList().stream())
+                                                  .filter(brand -> brand.getUid().equals(category.getUid())).findFirst();
+
+        Brand brand = null;
+
+        if(brandOptional.isPresent()){
+            brand = brandOptional.get();
+        }
+
+        List<ProductDetails> productDetails = brand.getProductDetails();
+        if(CollectionUtils.isEmpty(productDetails)){
+            productDetails = new ArrayList<ProductDetails>();
+        }
+
+            for (ProductDTO productDTO : brandDTO.getProducts()) {
+                ProductDetails producDetail = new ProductDetails();
+                producDetail.setUid(GASportsUtils.getUid());
+                producDetail.setName(productDTO.getName());
+                producDetail.setPrice(productDTO.getPrice());
+                productDetails.add(producDetail);
+            }
+
+        brand.setProductDetails(productDetails);
+        categoryRepository.save(category);
+        return new APIResponse("Product Details added successfully.",category);
+    }
 
 
 }

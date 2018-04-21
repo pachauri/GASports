@@ -27,7 +27,7 @@ public class GASportsUtils {
     }
 
     public static String[] getExcludedURL(){
-        String[] urls = {ADMIN_LOGIN_URL,LOGIN_URL,SIGN_UP_URL};
+        String[] urls = {ADMIN_LOGIN_URL,LOGIN_URL,SIGN_UP_URL,"/v2/api-docs", "/configuration/ui", "/swagger-resources", "/configuration/security", "/swagger-ui.html", "/webjars/**","/swagger-resources/configuration/ui","/swagger-ui.html"};
         return urls;
     }
 
