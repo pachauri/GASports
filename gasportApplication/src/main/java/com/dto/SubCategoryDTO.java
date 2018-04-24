@@ -9,43 +9,32 @@ import java.util.List;
  */
 public class SubCategoryDTO {
 
-    private String uid;
-
-    private String name;
-
     @NotEmpty
-    private List<BrandDTO> brands;
+    private String categoryName;
 
-    public String getUid() {
-        return uid;
+    private List<String> subcategoryNames;
+
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
-    public String getName() {
-        return name;
+    public List<String> getSubcategoryNames() {
+        return subcategoryNames;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<BrandDTO> getBrands() {
-        return brands;
-    }
-
-    public void setBrands(List<BrandDTO> brands) {
-        this.brands = brands;
+    public void setSubcategoryNames(List<String> subcategoryNames) {
+        this.subcategoryNames = subcategoryNames;
     }
 
     @Override
     public String toString() {
         return "SubCategoryDTO{" +
-                "uid='" + uid + '\'' +
-                ", name='" + name + '\'' +
-                ", brands=" + brands +
+                "categoryName='" + categoryName + '\'' +
+                ", subcategoryNames=" + subcategoryNames +
                 '}';
     }
 }

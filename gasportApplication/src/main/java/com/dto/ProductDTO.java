@@ -1,5 +1,7 @@
 package com.dto;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import java.util.List;
 
 /**
@@ -7,33 +9,57 @@ import java.util.List;
  */
 public class ProductDTO {
 
-    private String uid;
+    @NotEmpty
+    private String categoryName;
 
-    private String price;
+    @NotEmpty
+    private String subCategoryName;
 
-    private String name;
+    @NotEmpty
+    private String brandName;
 
-    public String getUid() {
-        return uid;
+    @NotEmpty
+    private List<ProductDetailsDTO> productDetails;
+
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
-    public String getPrice() {
-        return price;
+    public String getSubCategoryName() {
+        return subCategoryName;
     }
 
-    public void setPrice(String price) {
-        this.price = price;
+    public void setSubCategoryName(String subCategoryName) {
+        this.subCategoryName = subCategoryName;
     }
 
-    public String getName() {
-        return name;
+    public String getBrandName() {
+        return brandName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setBrandName(String brandName) {
+        this.brandName = brandName;
+    }
+
+    public List<ProductDetailsDTO> getProductDetails() {
+        return productDetails;
+    }
+
+    public void setProductDetails(List<ProductDetailsDTO> productDetails) {
+        this.productDetails = productDetails;
+    }
+
+    @Override
+    public String toString() {
+        return "ProductDTO{" +
+                "categoryName='" + categoryName + '\'' +
+                ", subCategoryName='" + subCategoryName + '\'' +
+                ", brandName='" + brandName + '\'' +
+                ", productDetails=" + productDetails +
+                '}';
     }
 }

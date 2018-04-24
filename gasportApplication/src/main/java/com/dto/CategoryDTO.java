@@ -1,7 +1,5 @@
 package com.dto;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 import java.util.List;
 
 /**
@@ -9,43 +7,20 @@ import java.util.List;
  */
 public class CategoryDTO {
 
-    private String uid;
+    private List<String> categoryNames;
 
-    private String name;
-
-    @NotEmpty
-    private List<SubCategoryDTO> subCategories;
-
-    public String getUid() {
-        return uid;
+    public List<String> getCategoryNames() {
+        return categoryNames;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<SubCategoryDTO> getSubCategories() {
-        return subCategories;
-    }
-
-    public void setSubCategories(List<SubCategoryDTO> subCategories) {
-        this.subCategories = subCategories;
+    public void setCategoryNames(List<String> categoryNames) {
+        this.categoryNames = categoryNames;
     }
 
     @Override
     public String toString() {
         return "CategoryDTO{" +
-                "uid='" + uid + '\'' +
-                ", name='" + name + '\'' +
-                ", subCategories=" + subCategories +
+                "categoryNames=" + categoryNames +
                 '}';
     }
 }

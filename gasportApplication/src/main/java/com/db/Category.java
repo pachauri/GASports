@@ -10,25 +10,14 @@ import java.util.List;
  * @author vipul pachauri
  */
 @Document(collection="productInfo")
-public class Category {
+public class Category extends BaseProductInfo {
 
     @Id
-    private String id;
-
     private String uid;
 
-    @Indexed(name = "categoryName")
-    private String categoryName;
+    private String name;
 
     private List<SubCategory> subCategories;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getUid() {
         return uid;
@@ -38,12 +27,17 @@ public class Category {
         this.uid = uid;
     }
 
-    public String getCategoryName() {
-        return categoryName;
+    public Category(String uid, String name) {
+        this.uid = uid;
+        this.name = name;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public List<SubCategory> getSubCategories() {

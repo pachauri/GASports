@@ -1,26 +1,27 @@
 package com.response;
 
-import com.db.ApplicationUser; /**
+/**
  * @author vipul pachauri
  */
 public class APIResponse {
 
     private String status;
     private ErrorResponse errorResponse;
+    private SuccessResponse successResponse;
     private Object data;
 
     public APIResponse() {
 
     }
 
-    public APIResponse(String msg, Object object) {
-        this.status=msg;
-        this.data=object;
+    public APIResponse(String status, SuccessResponse successResponse) {
+        this.status =status;
+        this.successResponse=successResponse;
 
     }
 
     public APIResponse(String msg, ErrorResponse errorResponse) {
-        this.status=msg;
+        this.status =msg;
         this.errorResponse=errorResponse;
 
     }
@@ -29,6 +30,19 @@ public class APIResponse {
         this.status = status;
         this.errorResponse = errorResponse;
         this.data = data;
+    }
+
+    public APIResponse(String status, Object accessToken) {
+        this.status = status;
+        this.data = accessToken;
+    }
+
+    public SuccessResponse getSuccessResponse() {
+        return successResponse;
+    }
+
+    public void setSuccessResponse(SuccessResponse successResponse) {
+        this.successResponse = successResponse;
     }
 
     public String getStatus() {
@@ -60,6 +74,7 @@ public class APIResponse {
         return "APIResponse{" +
                 "status='" + status + '\'' +
                 ", errorResponse=" + errorResponse +
+                ", successResponse=" + successResponse +
                 ", data=" + data +
                 '}';
     }

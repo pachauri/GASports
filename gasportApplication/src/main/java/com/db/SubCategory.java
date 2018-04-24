@@ -7,20 +7,14 @@ import java.util.List;
 /**
  * @author vipul pachauri
  */
-public class SubCategory implements Serializable {
-
-    private String uid;
+public class SubCategory extends BaseProductInfo {
 
     private String name;
 
     private List<Brand> brandList;
 
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
+    public SubCategory(String name) {
+        this.name = name;
     }
 
     public String getName() {
@@ -42,8 +36,7 @@ public class SubCategory implements Serializable {
     @Override
     public String toString() {
         return "SubCategory{" +
-                "uid='" + uid + '\'' +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", brandList=" + brandList +
                 '}';
     }

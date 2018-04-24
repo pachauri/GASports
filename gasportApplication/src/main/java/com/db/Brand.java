@@ -8,20 +8,14 @@ import java.util.List;
 /**
  * @author vipul pachauri
  */
-public class Brand implements Serializable {
-
-    private String uid;
+public class Brand extends BaseProductInfo {
 
     private String name;
 
     private List<ProductDetails> productDetails;
 
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
+    public Brand(String name) {
+        this.name = name;
     }
 
     public String getName() {
@@ -43,8 +37,7 @@ public class Brand implements Serializable {
     @Override
     public String toString() {
         return "Brand{" +
-                "uid='" + uid + '\'' +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", productDetails=" + productDetails +
                 '}';
     }

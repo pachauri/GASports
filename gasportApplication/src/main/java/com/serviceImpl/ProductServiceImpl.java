@@ -1,19 +1,30 @@
 package com.serviceImpl;
 
-import com.ExceptionHandler.GASportsException;
+import com.constants.GASportConstant;
 import com.db.Brand;
 import com.db.Category;
 import com.db.ProductDetails;
 import com.db.SubCategory;
-import com.dto.*;
+import com.dto.BrandDTO;
+import com.dto.CategoryDTO;
+import com.dto.ProductDTO;
+import com.dto.SubCategoryDTO;
 import com.repository.CategoryRepository;
 import com.repository.SubCategoryRepository;
 import com.response.APIResponse;
-import com.service.ProductService;
-import com.utils.GASportsUtils;
+import com.response.ErrorResponse;
+import com.response.SuccessResponse;
+import com.service.*;
+import enums.ErrorCodes;
+import enums.SuccessCodes;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -35,119 +46,105 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private SubCategoryRepository subCategoryRepository;
 
+    @Autowired
+    private CategoryService categoryService;
+
+    @Autowired
+    private SubCategoryService subCategoryService;
+
+    @Autowired
+    private BrandService brandService;
+
+    @Autowired
+    private ProductDetailsService productDetailsService;
+
+
     @Override
-    public APIResponse addCategory(ProductParentDTO productParentDTO) {
-        if(productParentDTO == null || CollectionUtils.isEmpty(productParentDTO.getCategories())){
-            throw new GASportsException("Can't add Empty Categories");
+    public APIResponse addCategory(CategoryDTO categoryDTO) {
+        if(categoryDTO == null || CollectionUtils.isEmpty(categoryDTO.getCategoryNames())){
+            logger.error("Error in adding category for [{}]",categoryDTO);
+            return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(ErrorCodes.ERROR_ADDING_CATEGORY.getResponseCode(),ErrorCodes.ERROR_ADDING_CATEGORY.getResponseMessage(),"Invalid category details."));
         }
-        List<Category> categories = new ArrayList<Category>();
-        for (CategoryDTO categoryDTO : productParentDTO.getCategories()) {
-            Category category = new Category();
-            category.setUid(GASportsUtils.getUid());
-            category.setCategoryName(categoryDTO.getName());
-            categories.add(category);
+        List<Category> categories = categoryService.createCategories(categoryDTO);
+        if(categories == null){
+            return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(ErrorCodes.ERROR_ADDING_CATEGORY.getResponseCode(),ErrorCodes.ERROR_ADDING_CATEGORY.getResponseMessage()));
         }
+        logger.info("Saving categories [{}]",categories);
         categoryRepository.save(categories);
-        return new APIResponse("Category added successfully.",productParentDTO.getCategories());
+        return new APIResponse(GASportConstant.SUCCESS,new SuccessResponse(SuccessCodes.SUCCESS_ADDED_CATEGORY.getResponseCode(),SuccessCodes.SUCCESS_ADDED_CATEGORY.getResponseMessage()));
     }
 
     @Override
-    public APIResponse addSubCategory(CategoryDTO categoryDTO) {
-        if(categoryDTO == null || CollectionUtils.isEmpty(categoryDTO.getSubCategories())){
-            throw new GASportsException("Can't add Empty Sub Categories");
+    public APIResponse addSubCategory(SubCategoryDTO subCategoryDTO) {
+        if(subCategoryDTO == null || StringUtils.isBlank(subCategoryDTO.getCategoryName()) || CollectionUtils.isEmpty(subCategoryDTO.getSubcategoryNames())){
+            logger.error("Error in sub category for [{}]",subCategoryDTO);
+            return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(ErrorCodes.ERROR_ADDING_SUB_CATEGORY.getResponseCode(),ErrorCodes.ERROR_ADDING_SUB_CATEGORY.getResponseMessage(),"Invalid sub category details."));
         }
-        Category category =  categoryRepository.findCategoryByCategoryUid(categoryDTO.getUid());
-        if(category == null){
-            throw new GASportsException("Category Not Found by given categoryId");
+
+        //Find category by category id
+        logger.info("Finding category by category name [{}]", subCategoryDTO.getCategoryName());
+        Category category = categoryRepository.findProductCategoryByName(subCategoryDTO.getCategoryName());
+        if (category == null) {
+            logger.error("Error: Category not found by category name [{}]", subCategoryDTO.getCategoryName());
+            return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(ErrorCodes.ERROR_CATEGORY_NOT_FOUND.getResponseCode(),ErrorCodes.ERROR_CATEGORY_NOT_FOUND.getResponseMessage()));
         }
-        List<SubCategory> subCategories = new ArrayList<SubCategory>();
+        logger.info("Category found by given category name [{}]", category.getName());
 
-            for (SubCategoryDTO dto : categoryDTO.getSubCategories()) {
-                SubCategory subCategory = new SubCategory();
-                subCategory.setUid(GASportsUtils.getUid());
-                subCategory.setName(dto.getName());
-                subCategories.add(subCategory);
-            }
-
+        List<SubCategory> subCategories = subCategoryService.createSubCategories(subCategoryDTO,category);
+        if(subCategories == null){
+            return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(ErrorCodes.ERROR_ADDING_SUB_CATEGORY.getResponseCode(),ErrorCodes.ERROR_ADDING_SUB_CATEGORY.getResponseMessage()));
+        }
         category.setSubCategories(subCategories);
         categoryRepository.save(category);
-        return new APIResponse("Subcategory added successfully",category.getSubCategories());
+        return new APIResponse(GASportConstant.SUCCESS,new SuccessResponse(SuccessCodes.SUCCESS_ADDED_SUB_CATEGORY.getResponseCode(),SuccessCodes.SUCCESS_ADDED_CATEGORY.getResponseMessage()));
     }
 
     @Override
-    public APIResponse addBrand(SubCategoryDTO subCategoryDTO) {
+    public APIResponse addBrand(BrandDTO brandDTO) {
 
-        if(subCategoryDTO == null || CollectionUtils.isEmpty(subCategoryDTO.getBrands())){
-            throw new GASportsException("Can't add Empty Brands");
-        }
-        Category category = categoryRepository.findCategoryBySubCategoryUid(subCategoryDTO.getUid());
-
-        if(category == null){
-            throw new GASportsException("SubCategory Not Found by given subCategoryId");
-        }
-        List<SubCategory> subCategories = category.getSubCategories();
-        SubCategory subCategory = null;
-        //Create stream for subCategories
-
-        Optional<SubCategory> optionalSubCategory = subCategories.stream().filter(s -> s.getUid().equals(subCategoryDTO.getUid())).findFirst();
-        if(optionalSubCategory.isPresent()){
-            subCategory = optionalSubCategory.get();
+        if(brandDTO == null || StringUtils.isBlank(brandDTO.getCategoryName())
+                || StringUtils.isBlank(brandDTO.getSubCategoryName()) || CollectionUtils.isEmpty(brandDTO.getBrandNames())){
+            logger.error("Error in adding brand for [{}]",brandDTO);
+            return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(ErrorCodes.ERROR_ADDING_BRAND.getResponseCode(),ErrorCodes.ERROR_ADDING_BRAND.getResponseMessage(),"Invalid brand details."));
         }
 
-        List<Brand> brandList = subCategory.getBrandList();
-
-        if(CollectionUtils.isEmpty(brandList)){
-            brandList = new ArrayList<Brand>();
+        //Find category by category name
+        logger.info("Finding category by category name [{}]", brandDTO.getCategoryName());
+        Category category = categoryRepository.findProductCategoryByName(brandDTO.getCategoryName());
+        if (category == null) {
+            logger.error("Error: Category not found by category name [{}]", brandDTO.getCategoryName());
+            return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(ErrorCodes.ERROR_CATEGORY_NOT_FOUND.getResponseCode(),ErrorCodes.ERROR_CATEGORY_NOT_FOUND.getResponseMessage()));
         }
+        logger.info("Category found by given category name [{}]", category.getName());
 
-        for (BrandDTO dto : subCategoryDTO.getBrands()) {
-            Brand brand = new Brand();
-            brand.setUid(GASportsUtils.getUid());
-            brand.setName(dto.getName());
-            brandList.add(brand);
+        List<Brand> brandList = brandService.createBrands(brandDTO,category);
+        if(brandList == null){
+            return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(ErrorCodes.ERROR_ADDING_BRAND.getResponseCode(),ErrorCodes.ERROR_ADDING_BRAND.getResponseMessage()));
         }
-        subCategory.setBrandList(brandList);
-        category = categoryRepository.save(category);
-        return new APIResponse("ProductParent Subcategory added successfully",category);
-    }
-
-    @Override
-    public APIResponse addProductDetails(BrandDTO brandDTO) {
-        if(brandDTO == null || CollectionUtils.isEmpty(brandDTO.getProducts())){
-            throw new GASportsException("Can't add Empty Product Details");
-        }
-
-        Category category = categoryRepository.findProductCategoryByBrandUid(brandDTO.getUid());
-        if(category == null){
-            throw  new GASportsException("Brand not found by brandId.");
-        }
-
-        Optional<Brand> brandOptional = category.getSubCategories().stream()
-                                                 .flatMap(subCategory -> subCategory.getBrandList().stream())
-                                                  .filter(brand -> brand.getUid().equals(category.getUid())).findFirst();
-
-        Brand brand = null;
-
-        if(brandOptional.isPresent()){
-            brand = brandOptional.get();
-        }
-
-        List<ProductDetails> productDetails = brand.getProductDetails();
-        if(CollectionUtils.isEmpty(productDetails)){
-            productDetails = new ArrayList<ProductDetails>();
-        }
-
-            for (ProductDTO productDTO : brandDTO.getProducts()) {
-                ProductDetails producDetail = new ProductDetails();
-                producDetail.setUid(GASportsUtils.getUid());
-                producDetail.setName(productDTO.getName());
-                producDetail.setPrice(productDTO.getPrice());
-                productDetails.add(producDetail);
-            }
-
-        brand.setProductDetails(productDetails);
         categoryRepository.save(category);
-        return new APIResponse("Product Details added successfully.",category);
+        return new APIResponse(GASportConstant.SUCCESS,new SuccessResponse(SuccessCodes.SUCCESS_ADDED_BRAND.getResponseCode(),SuccessCodes.SUCCESS_ADDED_CATEGORY.getResponseMessage()));
+    }
+
+    @Override
+    public APIResponse addProductDetails(ProductDTO productDTO) {
+        if(productDTO == null || StringUtils.isBlank(productDTO.getCategoryName())
+                || StringUtils.isBlank(productDTO.getSubCategoryName()) || StringUtils.isBlank(productDTO.getBrandName()) || CollectionUtils.isEmpty(productDTO.getProductDetails())){
+            return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(ErrorCodes.ERROR_ADDING_PRODUCT_DETAILS.getResponseCode(),ErrorCodes.ERROR_ADDING_PRODUCT_DETAILS.getResponseMessage(),"Invalid product details."));
+        }
+
+        logger.info("Finding category by category name [{}]", productDTO.getCategoryName());
+        Category category = categoryRepository.findProductCategoryByName(productDTO.getCategoryName());
+        if(category == null){
+            logger.error("Error: Category not found by category name [{}]", productDTO.getCategoryName());
+            return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(ErrorCodes.ERROR_CATEGORY_NOT_FOUND.getResponseCode(),ErrorCodes.ERROR_CATEGORY_NOT_FOUND.getResponseMessage()));
+        }
+
+        List<ProductDetails> productDetails = productDetailsService.createProductDetails(productDTO,category);
+        if(productDetails == null){
+            return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(ErrorCodes.ERROR_ADDING_SUB_CATEGORY.getResponseCode(),ErrorCodes.ERROR_ADDING_SUB_CATEGORY.getResponseMessage()));
+        }
+        categoryRepository.save(category);
+        return new APIResponse(GASportConstant.SUCCESS,new SuccessResponse(SuccessCodes.SUCCESS_ADDED_PRODUCT_DETAILS.getResponseCode(),SuccessCodes.SUCCESS_ADDED_CATEGORY.getResponseMessage()));
     }
 
 

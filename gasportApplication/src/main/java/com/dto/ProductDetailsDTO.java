@@ -1,5 +1,7 @@
 package com.dto;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 /**
  * @author vipul pachauri
  */

@@ -24,27 +24,27 @@ public class AdminHandler {
     private ProductService productService;
 
     @PostMapping(ADD_CATEGORY)
-    public APIResponse addCategory(@RequestBody ProductParentDTO productParentDTO){
-        logger.info("Adding ProductParent category [{}]",productParentDTO);
-        return productService.addCategory(productParentDTO);
+    public APIResponse addCategory(@RequestBody CategoryDTO categoryDTO){
+        logger.info("Adding Product category [{}]",categoryDTO);
+        return productService.addCategory(categoryDTO);
     }
 
     @PostMapping(Mappings.ADD_SUB_CATEGORY)
-    public APIResponse addSubCategory(@RequestBody CategoryDTO categoryDTO){
-        logger.info("Adding ProductParent Subcategory [{}]",categoryDTO);
-        return productService.addSubCategory(categoryDTO);
+    public APIResponse addSubCategory(@RequestBody SubCategoryDTO subCategoryDTO){
+        logger.info("Adding Product Subcategory [{}]",subCategoryDTO);
+        return productService.addSubCategory(subCategoryDTO);
     }
 
     @PostMapping(Mappings.ADD_BRAND)
-    public APIResponse addBrand(@RequestBody SubCategoryDTO subCategoryDTO){
-        logger.info("Adding ProductParent brand [{}]",subCategoryDTO);
-        return productService.addBrand(subCategoryDTO);
+    public APIResponse addBrand(@RequestBody BrandDTO brandDTO){
+        logger.info("Adding Product brand [{}]",brandDTO);
+        return productService.addBrand(brandDTO);
     }
 
     @PostMapping(Mappings.ADD_PRODUCT_DETAILS)
-    public APIResponse addProductDetails(@RequestBody BrandDTO brandDTO){
-        logger.info("Adding ProductParent Details [{}]",brandDTO);
-        return productService.addProductDetails(brandDTO);
+    public APIResponse addProductDetails(@RequestBody ProductDTO productDTO){
+        logger.info("Adding Product Details [{}]",productDTO);
+        return productService.addProductDetails(productDTO);
     }
 
 

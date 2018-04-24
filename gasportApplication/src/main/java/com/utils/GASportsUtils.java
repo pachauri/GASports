@@ -1,16 +1,22 @@
 package com.utils;
 
+import com.db.BaseProductInfo;
+import com.db.Category;
+import com.db.SubCategory;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.Mappings.ADMIN_LOGIN_URL;
 import static com.Mappings.LOGIN_URL;
 import static com.Mappings.SIGN_UP_URL;
-import static com.constants.SecurityConstant.EXPIRATION_TIME;
-import static com.constants.SecurityConstant.SECRET;
+import static com.constants.GASportConstant.EXPIRATION_TIME;
+import static com.constants.GASportConstant.SECRET;
 
 /**
  * @author vipul pachauri
@@ -34,4 +40,5 @@ public class GASportsUtils {
     public static String getUid(){
         return UUID.randomUUID().toString();
     }
+
 }

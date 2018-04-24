@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static com.constants.SecurityConstant.*;
+import static com.constants.GASportConstant.*;
 
 /**
  * @author vipul pachauri

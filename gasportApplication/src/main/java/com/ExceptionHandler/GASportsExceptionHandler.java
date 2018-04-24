@@ -1,5 +1,6 @@
 package com.ExceptionHandler;
 
+import com.constants.GASportConstant;
 import com.response.APIResponse;
 import com.response.ErrorResponse;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -18,19 +19,19 @@ public class GASportsExceptionHandler {
     @ExceptionHandler(GASportsException.class)
     @ResponseBody
     public APIResponse handleException(GASportsException e){
-        return new APIResponse("Failure",new ErrorResponse(e.getMessage()));
+        return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(e.getMessage()));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseBody
     public APIResponse handleException(ConstraintViolationException e){
-        return new APIResponse("Failure",new ErrorResponse(e.getConstraintViolations().iterator().next().getMessageTemplate()));
+        return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(e.getConstraintViolations().iterator().next().getMessageTemplate()));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseBody
     public APIResponse handleException(HttpMessageNotReadableException e){
-        return new APIResponse("Failure",new ErrorResponse(e.getMessage()));
+        return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(e.getMessage()));
     }
 }
 

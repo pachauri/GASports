@@ -1,6 +1,5 @@
 package com.service;
 
-import com.db.SubCategory;
 import com.dto.*;
 import com.response.APIResponse;
 
@@ -9,11 +8,11 @@ import com.response.APIResponse;
  */
 public interface ProductService {
 
-    APIResponse addCategory(ProductParentDTO productParentDTO);
+    APIResponse addCategory(CategoryDTO categoryDTO);
 
-    APIResponse addSubCategory(CategoryDTO categoryDTO);
+    APIResponse addSubCategory(SubCategoryDTO subCategoryDTO);
 
-    APIResponse addBrand(SubCategoryDTO subCategoryDTO);
+    APIResponse addBrand(BrandDTO brandDTO);
 
-   APIResponse addProductDetails(BrandDTO brandDTO);
+    APIResponse addProductDetails(ProductDTO productDTO);
 }

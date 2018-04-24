@@ -7,20 +7,15 @@ import java.io.Serializable;
 /**
  * @author vipul pachauri
  */
-public class ProductDetails implements Serializable {
-
-    private String uid;
+public class ProductDetails extends BaseProductInfo {
 
     private String name;
 
     private String price;
 
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
+    public ProductDetails(String name, String price) {
+        this.name = name;
+        this.price = price;
     }
 
     public String getName() {
@@ -39,12 +34,4 @@ public class ProductDetails implements Serializable {
         this.price = price;
     }
 
-    @Override
-    public String toString() {
-        return "ProductDetails{" +
-                "uid='" + uid + '\'' +
-                ", name='" + name + '\'' +
-                ", price='" + price + '\'' +
-                '}';
-    }
 }

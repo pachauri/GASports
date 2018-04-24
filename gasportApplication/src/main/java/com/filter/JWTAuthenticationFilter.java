@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static com.constants.SecurityConstant.*;
+import static com.constants.GASportConstant.*;
 
 
 /**
