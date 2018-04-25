@@ -12,9 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.Mappings.ADMIN_LOGIN_URL;
-import static com.Mappings.LOGIN_URL;
-import static com.Mappings.SIGN_UP_URL;
+import static com.Mappings.*;
 import static com.constants.GASportConstant.EXPIRATION_TIME;
 import static com.constants.GASportConstant.SECRET;
 
@@ -33,7 +31,23 @@ public class GASportsUtils {
     }
 
     public static String[] getExcludedURL(){
-        String[] urls = {ADMIN_LOGIN_URL,LOGIN_URL,SIGN_UP_URL,"/v2/api-docs", "/configuration/ui", "/swagger-resources", "/configuration/security", "/swagger-ui.html", "/webjars/**","/swagger-resources/configuration/ui","/swagger-ui.html"};
+        String[] urls = {
+                ADMIN_LOGIN_URL,
+                LOGIN_URL,
+                SIGN_UP_URL,
+                GET_CATEGORY,
+                GET_CATEGORIES,
+                GET_SUB_CATEGORY,
+                GET_SUB_CATEGORIES,
+                GET_BRAND,
+                "/v2/api-docs",
+                "/configuration/ui",
+                "/swagger-resources",
+                "/configuration/security",
+                "/swagger-ui.html",
+                "/webjars/**",
+                "/swagger-resources/configuration/ui",
+                "/swagger-ui.html"};
         return urls;
     }
 

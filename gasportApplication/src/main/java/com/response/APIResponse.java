@@ -26,9 +26,9 @@ public class APIResponse {
 
     }
 
-    public APIResponse(String status, ErrorResponse errorResponse, Object data) {
+    public APIResponse(String status, SuccessResponse successResponse, Object data) {
         this.status = status;
-        this.errorResponse = errorResponse;
+        this.successResponse = successResponse;
         this.data = data;
     }
 

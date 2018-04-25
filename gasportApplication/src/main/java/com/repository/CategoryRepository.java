@@ -15,6 +15,9 @@ public interface CategoryRepository extends MongoRepository<Category,Long>{
     @Query("{ 'name' : ?0 }")
     Category findProductCategoryByName(String name);
 
-   @Query(value="{ 'subCategories.name' : ?0 }")
-   SubCategory findSubtCategoryByName(String name);
+    @Query(value = "{ 'name' : ?0, 'subCategories.name' : ?1 }", fields = "{ 'subCategories.name' : 1 }")
+    Category findProductCategoryByCatNameAndSubCatName(String categoryName, String subCategoryName);
+
+    @Query(value = "{ 'name' : ?0, 'subCategories.name' : ?1, 'subCategories.brandList.name' : ?2 }", fields = "{ 'subCategories.name' : 1,'subCategories.brandList.name' : 2 }")
+    Category findCategoryByCatAndSubCatAndBrandName(String categoryName, String subcategoryName, String brandName);
 }
