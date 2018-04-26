@@ -25,8 +25,8 @@ public class CategoryHandler {
     private CategoryService categoryService;
 
     @GetMapping(value = GET_CATEGORY)
-    public APIResponse getCategory(@PathVariable String name){
-        return categoryService.getCategoryByName(name);
+    public APIResponse getCategory(@PathVariable String categoryName){
+        return categoryService.getCategoryByName(categoryName);
     }
 
     @GetMapping(value = GET_CATEGORIES)

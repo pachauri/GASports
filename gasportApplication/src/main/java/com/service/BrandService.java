@@ -18,5 +18,5 @@ public interface BrandService {
 
     APIResponse getBrand(String categoryName, String subcategoryName, String brandName);
 
-    APIResponse getBrands(String subcategoryName);
+    APIResponse getBrands(String categoryName, String subcategoryName);
 }

@@ -64,14 +64,17 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public APIResponse getCategoryByName(String name) {
-        if(StringUtils.isBlank(name)){
+    public APIResponse getCategoryByName(String categoryName) {
+        if(StringUtils.isBlank(categoryName)){
+            logger.error("Error : getCategoryByName, Given category name is empty [{}]",categoryName);
             return new APIResponse(FAILURE,new ErrorResponse(ERROR_CATEGORY_NOT_FOUND.getResponseCode(),ERROR_CATEGORY_NOT_FOUND.getResponseMessage()));
         }
-       Category category =  categoryRepository.findProductCategoryByName(name);
+       Category category =  categoryRepository.findProductCategoryByName(categoryName);
         if (category == null){
-            return new APIResponse(FAILURE,new ErrorResponse());
+            logger.error("Error : getCategoryByName, Category does not exist by name [{}]",categoryName);
+            return new APIResponse(FAILURE,new ErrorResponse(ERROR_CATEGORY_NOT_FOUND.getResponseCode(),ERROR_CATEGORY_NOT_FOUND.getResponseMessage()));
         }
+        logger.info("Success : getCategoryByName, Category found by name [{}]",categoryName);
         return new APIResponse(SUCCESS,new SuccessResponse(SUCCESS_FOUND_CATEGORY.getResponseCode(),SUCCESS_FOUND_CATEGORY.getResponseMessage()),category);
     }
 
@@ -79,6 +82,7 @@ public class CategoryServiceImpl implements CategoryService {
     public APIResponse getAllCategories() {
         List<Category> categories = categoryRepository.findAll();
         if(CollectionUtils.isEmpty(categories)){
+            logger.error("Error : getAllCategories, No category exists.");
             return new APIResponse(FAILURE,new ErrorResponse(ERROR_CATEGORY_NOT_FOUND.getResponseCode(),ERROR_CATEGORY_NOT_FOUND.getResponseMessage()));
         }
         return new APIResponse(SUCCESS,new SuccessResponse(SUCCESS_FOUND_CATEGORY.getResponseCode(),SUCCESS_FOUND_CATEGORY.getResponseMessage()),categories);

@@ -70,10 +70,15 @@ public class SubCategoryServiceImpl implements SubCategoryService {
             logger.error("Error : getSubCategoryByName [{}]",subCategoryName);
             return new APIResponse(FAILURE,new ErrorResponse(ERROR_SUB_CATEGORY_NOT_FOUND.getResponseCode(),ERROR_SUB_CATEGORY_NOT_FOUND.getResponseMessage()));
         }
-        Category category = categoryRepository.findProductCategoryByCatNameAndSubCatName(categoryName,subCategoryName);
+        Category category = categoryRepository.findProductCategoryByName(categoryName);
         if (category == null){
             logger.error("Error : getSubCategoryByName  Category doesn't exist for subcategory [{}]",subCategoryName);
             return new APIResponse(FAILURE,new ErrorResponse(ERROR_CATEGORY_NOT_FOUND.getResponseCode(),ERROR_CATEGORY_NOT_FOUND.getResponseMessage()));
+        }
+
+        if(CollectionUtils.isEmpty(category.getSubCategories())){
+            logger.error("Error : getSubCategoryByName  Subcategories don't exist for category [{}]",categoryName);
+            return new APIResponse(FAILURE,new ErrorResponse(ERROR_SUB_CATEGORY_NOT_FOUND.getResponseCode(),ERROR_SUB_CATEGORY_NOT_FOUND.getResponseMessage()));
         }
 
         SubCategory subCategory = getSubCategoryFromList(category.getSubCategories(),subCategoryName);

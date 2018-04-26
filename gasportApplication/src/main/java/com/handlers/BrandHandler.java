@@ -29,7 +29,7 @@ public class BrandHandler {
     }
 
     @GetMapping(value = GET_BRANDS)
-    public APIResponse getBrands(@PathVariable String subcategoryName){
-        return brandService.getBrands(subcategoryName);
+    public APIResponse getBrands(@PathVariable String categoryName, @PathVariable String subcategoryName){
+        return brandService.getBrands(categoryName,subcategoryName);
     }
 }
