@@ -1,33 +1,38 @@
 package com.handlers;
 
 import com.response.APIResponse;
-import com.service.CategoryService;
+import com.service.ProductDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
-import static com.Mappings.GET_CATEGORIES;
-import static com.Mappings.GET_CATEGORY;
+import static com.Mappings.*;
 
 /**
  * @author vipul pachauri
  */
+@RestController
 public class ProductHandler {
 
-    private Logger logger = LoggerFactory.getLogger(SubCategoryHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(SubCategoryHandler.class);
 
     @Autowired
-    private CategoryService categoryService;
+    private ProductDetailsService productDetailsService;
 
-    @GetMapping(value = GET_CATEGORY)
-    public APIResponse getCategory(@PathVariable String name){
-        return categoryService.getCategoryByName(name);
+    @GetMapping(value = GET_PRODUCT)
+    public APIResponse getProductDetails(@PathVariable String categoryName,@PathVariable String subcategoryName,
+                                   @PathVariable String brandName,@PathVariable String productName){
+        logger.info("getProductDetails call started.");
+        return productDetailsService.getProductDetailsByName(categoryName,subcategoryName,brandName,productName);
     }
 
-    @GetMapping(value = GET_CATEGORIES)
-    public APIResponse getAllCategories(){
-        return categoryService.getAllCategories();
+    @GetMapping(value = GET_PRODUCTS)
+    public APIResponse getProductsDetails(@PathVariable String categoryName,@PathVariable String subcategoryName,
+                                   @PathVariable String brandName){
+        logger.info("getProductsDetails call started.");
+        return productDetailsService.getAllProductsDetails(categoryName,subcategoryName,brandName);
     }
 }

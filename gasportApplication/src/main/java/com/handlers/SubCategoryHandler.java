@@ -17,18 +17,20 @@ import static com.Mappings.*;
 @RestController
 public class SubCategoryHandler {
 
-    private Logger logger = LoggerFactory.getLogger(SubCategoryHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(SubCategoryHandler.class);
 
     @Autowired
     private SubCategoryService subCategoryService;
 
     @GetMapping(value = GET_SUB_CATEGORY)
     public APIResponse getSubCategory(@PathVariable String categoryName, @PathVariable String subcategoryName){
+        logger.info("getSubCategory call started.");
         return subCategoryService.getSubCategoryByName(categoryName,subcategoryName);
     }
 
     @GetMapping(value = GET_SUB_CATEGORIES)
     public APIResponse getSubCategories(@PathVariable String categoryName){
+        logger.info("getSubCategories call started.");
         return subCategoryService.getSubCategories(categoryName);
     }
 }

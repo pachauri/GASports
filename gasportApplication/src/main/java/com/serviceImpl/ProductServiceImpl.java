@@ -21,14 +21,9 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +33,7 @@ import java.util.Optional;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -61,24 +56,24 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public APIResponse addCategory(CategoryDTO categoryDTO) {
-        if(categoryDTO == null || CollectionUtils.isEmpty(categoryDTO.getCategoryNames())){
-            logger.error("Error in adding category for [{}]",categoryDTO);
-            return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(ErrorCodes.ERROR_ADDING_CATEGORY.getResponseCode(),ErrorCodes.ERROR_ADDING_CATEGORY.getResponseMessage(),"Invalid category details."));
+        if (categoryDTO == null || CollectionUtils.isEmpty(categoryDTO.getCategoryNames())) {
+            logger.error("Error in adding category for [{}]", categoryDTO);
+            return new APIResponse(GASportConstant.FAILURE, new ErrorResponse(ErrorCodes.ERROR_ADDING_CATEGORY.getResponseCode(), ErrorCodes.ERROR_ADDING_CATEGORY.getResponseMessage(), "Invalid category details."));
         }
         List<Category> categories = categoryService.createCategories(categoryDTO);
-        if(categories == null){
-            return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(ErrorCodes.ERROR_ADDING_CATEGORY.getResponseCode(),ErrorCodes.ERROR_ADDING_CATEGORY.getResponseMessage()));
+        if (categories == null) {
+            return new APIResponse(GASportConstant.FAILURE, new ErrorResponse(ErrorCodes.ERROR_ADDING_CATEGORY.getResponseCode(), ErrorCodes.ERROR_ADDING_CATEGORY.getResponseMessage()));
         }
-        logger.info("Saving categories [{}]",categories);
+        logger.info("Saving categories [{}]", categories);
         categoryRepository.save(categories);
-        return new APIResponse(GASportConstant.SUCCESS,new SuccessResponse(SuccessCodes.SUCCESS_ADDED_CATEGORY.getResponseCode(),SuccessCodes.SUCCESS_ADDED_CATEGORY.getResponseMessage()));
+        return new APIResponse(GASportConstant.SUCCESS, new SuccessResponse(SuccessCodes.SUCCESS_ADDED_CATEGORY.getResponseCode(), SuccessCodes.SUCCESS_ADDED_CATEGORY.getResponseMessage()));
     }
 
     @Override
     public APIResponse addSubCategory(SubCategoryDTO subCategoryDTO) {
-        if(subCategoryDTO == null || StringUtils.isBlank(subCategoryDTO.getCategoryName()) || CollectionUtils.isEmpty(subCategoryDTO.getSubcategoryNames())){
-            logger.error("Error in sub category for [{}]",subCategoryDTO);
-            return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(ErrorCodes.ERROR_ADDING_SUB_CATEGORY.getResponseCode(),ErrorCodes.ERROR_ADDING_SUB_CATEGORY.getResponseMessage(),"Invalid sub category details."));
+        if (subCategoryDTO == null || StringUtils.isBlank(subCategoryDTO.getCategoryName()) || CollectionUtils.isEmpty(subCategoryDTO.getSubcategoryNames())) {
+            logger.error("Error in sub category for [{}]", subCategoryDTO);
+            return new APIResponse(GASportConstant.FAILURE, new ErrorResponse(ErrorCodes.ERROR_ADDING_SUB_CATEGORY.getResponseCode(), ErrorCodes.ERROR_ADDING_SUB_CATEGORY.getResponseMessage(), "Invalid sub category details."));
         }
 
         //Find category by category id
@@ -86,26 +81,26 @@ public class ProductServiceImpl implements ProductService {
         Category category = categoryRepository.findProductCategoryByName(subCategoryDTO.getCategoryName());
         if (category == null) {
             logger.error("Error: Category not found by category name [{}]", subCategoryDTO.getCategoryName());
-            return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(ErrorCodes.ERROR_CATEGORY_NOT_FOUND.getResponseCode(),ErrorCodes.ERROR_CATEGORY_NOT_FOUND.getResponseMessage()));
+            return new APIResponse(GASportConstant.FAILURE, new ErrorResponse(ErrorCodes.ERROR_CATEGORY_NOT_FOUND.getResponseCode(), ErrorCodes.ERROR_CATEGORY_NOT_FOUND.getResponseMessage()));
         }
         logger.info("Category found by given category name [{}]", category.getName());
 
-        List<SubCategory> subCategories = subCategoryService.createSubCategories(subCategoryDTO,category);
-        if(subCategories == null){
-            return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(ErrorCodes.ERROR_ADDING_SUB_CATEGORY.getResponseCode(),ErrorCodes.ERROR_ADDING_SUB_CATEGORY.getResponseMessage()));
+        List<SubCategory> subCategories = subCategoryService.createSubCategories(subCategoryDTO, category);
+        if (subCategories == null) {
+            return new APIResponse(GASportConstant.FAILURE, new ErrorResponse(ErrorCodes.ERROR_ADDING_SUB_CATEGORY.getResponseCode(), ErrorCodes.ERROR_ADDING_SUB_CATEGORY.getResponseMessage()));
         }
         category.setSubCategories(subCategories);
         categoryRepository.save(category);
-        return new APIResponse(GASportConstant.SUCCESS,new SuccessResponse(SuccessCodes.SUCCESS_ADDED_SUB_CATEGORY.getResponseCode(),SuccessCodes.SUCCESS_ADDED_CATEGORY.getResponseMessage()));
+        return new APIResponse(GASportConstant.SUCCESS, new SuccessResponse(SuccessCodes.SUCCESS_ADDED_SUB_CATEGORY.getResponseCode(), SuccessCodes.SUCCESS_ADDED_CATEGORY.getResponseMessage()));
     }
 
     @Override
     public APIResponse addBrand(BrandDTO brandDTO) {
 
-        if(brandDTO == null || StringUtils.isBlank(brandDTO.getCategoryName())
-                || StringUtils.isBlank(brandDTO.getSubCategoryName()) || CollectionUtils.isEmpty(brandDTO.getBrandNames())){
-            logger.error("Error in adding brand for [{}]",brandDTO);
-            return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(ErrorCodes.ERROR_ADDING_BRAND.getResponseCode(),ErrorCodes.ERROR_ADDING_BRAND.getResponseMessage(),"Invalid brand details."));
+        if (brandDTO == null || StringUtils.isBlank(brandDTO.getCategoryName())
+                || StringUtils.isBlank(brandDTO.getSubCategoryName()) || CollectionUtils.isEmpty(brandDTO.getBrandNames())) {
+            logger.error("Error in adding brand for [{}]", brandDTO);
+            return new APIResponse(GASportConstant.FAILURE, new ErrorResponse(ErrorCodes.ERROR_ADDING_BRAND.getResponseCode(), ErrorCodes.ERROR_ADDING_BRAND.getResponseMessage(), "Invalid brand details."));
         }
 
         //Find category by category name
@@ -113,39 +108,51 @@ public class ProductServiceImpl implements ProductService {
         Category category = categoryRepository.findProductCategoryByName(brandDTO.getCategoryName());
         if (category == null) {
             logger.error("Error: Category not found by category name [{}]", brandDTO.getCategoryName());
-            return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(ErrorCodes.ERROR_CATEGORY_NOT_FOUND.getResponseCode(),ErrorCodes.ERROR_CATEGORY_NOT_FOUND.getResponseMessage()));
+            return new APIResponse(GASportConstant.FAILURE, new ErrorResponse(ErrorCodes.ERROR_CATEGORY_NOT_FOUND.getResponseCode(), ErrorCodes.ERROR_CATEGORY_NOT_FOUND.getResponseMessage()));
         }
         logger.info("Category found by given category name [{}]", category.getName());
 
-        List<Brand> brandList = brandService.createBrands(brandDTO,category);
-        if(brandList == null){
-            return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(ErrorCodes.ERROR_ADDING_BRAND.getResponseCode(),ErrorCodes.ERROR_ADDING_BRAND.getResponseMessage()));
+        List<Brand> brandList = brandService.createBrands(brandDTO, category);
+        if (brandList == null) {
+            return new APIResponse(GASportConstant.FAILURE, new ErrorResponse(ErrorCodes.ERROR_ADDING_BRAND.getResponseCode(), ErrorCodes.ERROR_ADDING_BRAND.getResponseMessage()));
         }
         categoryRepository.save(category);
-        return new APIResponse(GASportConstant.SUCCESS,new SuccessResponse(SuccessCodes.SUCCESS_ADDED_BRAND.getResponseCode(),SuccessCodes.SUCCESS_ADDED_CATEGORY.getResponseMessage()));
+        return new APIResponse(GASportConstant.SUCCESS, new SuccessResponse(SuccessCodes.SUCCESS_ADDED_BRAND.getResponseCode(), SuccessCodes.SUCCESS_ADDED_CATEGORY.getResponseMessage()));
     }
 
     @Override
     public APIResponse addProductDetails(ProductDTO productDTO) {
-        if(productDTO == null || StringUtils.isBlank(productDTO.getCategoryName())
-                || StringUtils.isBlank(productDTO.getSubCategoryName()) || StringUtils.isBlank(productDTO.getBrandName()) || CollectionUtils.isEmpty(productDTO.getProductDetails())){
-            return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(ErrorCodes.ERROR_ADDING_PRODUCT_DETAILS.getResponseCode(),ErrorCodes.ERROR_ADDING_PRODUCT_DETAILS.getResponseMessage(),"Invalid product details."));
+        if (productDTO == null || StringUtils.isBlank(productDTO.getCategoryName())
+                || StringUtils.isBlank(productDTO.getSubCategoryName()) || StringUtils.isBlank(productDTO.getBrandName()) || CollectionUtils.isEmpty(productDTO.getProductDetails())) {
+            return new APIResponse(GASportConstant.FAILURE, new ErrorResponse(ErrorCodes.ERROR_ADDING_PRODUCT_DETAILS.getResponseCode(), ErrorCodes.ERROR_ADDING_PRODUCT_DETAILS.getResponseMessage(), "Invalid product details."));
         }
 
         logger.info("Finding category by category name [{}]", productDTO.getCategoryName());
         Category category = categoryRepository.findProductCategoryByName(productDTO.getCategoryName());
-        if(category == null){
+        if (category == null) {
             logger.error("Error: Category not found by category name [{}]", productDTO.getCategoryName());
-            return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(ErrorCodes.ERROR_CATEGORY_NOT_FOUND.getResponseCode(),ErrorCodes.ERROR_CATEGORY_NOT_FOUND.getResponseMessage()));
+            return new APIResponse(GASportConstant.FAILURE, new ErrorResponse(ErrorCodes.ERROR_CATEGORY_NOT_FOUND.getResponseCode(), ErrorCodes.ERROR_CATEGORY_NOT_FOUND.getResponseMessage()));
         }
 
-        List<ProductDetails> productDetails = productDetailsService.createProductDetails(productDTO,category);
-        if(productDetails == null){
-            return new APIResponse(GASportConstant.FAILURE,new ErrorResponse(ErrorCodes.ERROR_ADDING_SUB_CATEGORY.getResponseCode(),ErrorCodes.ERROR_ADDING_SUB_CATEGORY.getResponseMessage()));
+        List<ProductDetails> productDetails = productDetailsService.createProductDetails(productDTO, category);
+        if (productDetails == null) {
+            return new APIResponse(GASportConstant.FAILURE, new ErrorResponse(ErrorCodes.ERROR_ADDING_SUB_CATEGORY.getResponseCode(), ErrorCodes.ERROR_ADDING_SUB_CATEGORY.getResponseMessage()));
         }
         categoryRepository.save(category);
-        return new APIResponse(GASportConstant.SUCCESS,new SuccessResponse(SuccessCodes.SUCCESS_ADDED_PRODUCT_DETAILS.getResponseCode(),SuccessCodes.SUCCESS_ADDED_CATEGORY.getResponseMessage()));
+        return new APIResponse(GASportConstant.SUCCESS, new SuccessResponse(SuccessCodes.SUCCESS_ADDED_PRODUCT_DETAILS.getResponseCode(), SuccessCodes.SUCCESS_ADDED_CATEGORY.getResponseMessage()));
     }
 
 
+    public ProductDetails getProductDetailsFromList(List<ProductDetails> productDetails, String productName) {
+        ProductDetails foundProduct;
+        Optional<ProductDetails> productDetailsOptional = productDetails.stream().filter(product -> product.getName().equalsIgnoreCase(productName)).findFirst();
+        if (productDetailsOptional.isPresent()) {
+            logger.info("Product found by name [{}]", productName);
+            foundProduct = productDetailsOptional.get();
+            return foundProduct;
+        } else {
+            logger.error("Product doesn't exist by name [{}]", productName);
+            return null;
+        }
+    }
 }

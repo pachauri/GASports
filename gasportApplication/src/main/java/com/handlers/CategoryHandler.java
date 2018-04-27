@@ -1,6 +1,5 @@
 package com.handlers;
 
-import com.Mappings;
 import com.response.APIResponse;
 import com.service.CategoryService;
 import org.slf4j.Logger;
@@ -19,18 +18,20 @@ import static com.Mappings.GET_CATEGORY;
 @RestController
 public class CategoryHandler {
 
-    private Logger logger = LoggerFactory.getLogger(CategoryHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(CategoryHandler.class);
 
     @Autowired
     private CategoryService categoryService;
 
     @GetMapping(value = GET_CATEGORY)
     public APIResponse getCategory(@PathVariable String categoryName){
+        logger.info("getCategory call started.");
         return categoryService.getCategoryByName(categoryName);
     }
 
     @GetMapping(value = GET_CATEGORIES)
     public APIResponse getAllCategories(){
+        logger.info("getAllCategories call started.");
         return categoryService.getAllCategories();
     }
 }

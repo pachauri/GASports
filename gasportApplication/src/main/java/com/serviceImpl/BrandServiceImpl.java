@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 import static com.constants.GASportConstant.FAILURE;
 import static com.constants.GASportConstant.SUCCESS;
 import static enums.ErrorCodes.ERROR_BRAND_NOT_FOUND;
-import static enums.ErrorCodes.ERROR_CATEGORY_NOT_FOUND;
 import static enums.ErrorCodes.ERROR_SUB_CATEGORY_NOT_FOUND;
 import static enums.SuccessCodes.SUCCESS_FOUND_BRAND;
 import static enums.SuccessCodes.SUCCESS_FOUND_CATEGORY;
@@ -34,9 +33,9 @@ import static enums.SuccessCodes.SUCCESS_FOUND_CATEGORY;
  * @author vipul pachauri
  */
 @Service
-public class BrandServiceImpl implements BrandService {
+class BrandServiceImpl implements BrandService {
 
-    private Logger logger = LoggerFactory.getLogger(BrandServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(BrandServiceImpl.class);
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -45,19 +44,19 @@ public class BrandServiceImpl implements BrandService {
     private SubCategoryService subCategoryService;
 
     @Override
-    public List<Brand> createBrands(BrandDTO brandDTO,Category category) {
+    public List<Brand> createBrands(BrandDTO brandDTO, Category category) {
 
         logger.info("Getting all sub categories of category name [{}]", category.getName());
         if (CollectionUtils.isEmpty(category.getSubCategories())) {
             logger.error("Error : createBrands() sub categories not found");
-           return null;
+            return null;
         }
-        SubCategory foundedSubCategory = subCategoryService.getSubCategoryFromList(category.getSubCategories(),brandDTO.getSubCategoryName());
+        SubCategory foundedSubCategory = subCategoryService.getSubCategoryFromList(category.getSubCategories(), brandDTO.getSubCategoryName());
         List<Brand> brandList = foundedSubCategory.getBrandList();
-        List<String> brandNames = new ArrayList<String>();
-        if (!CollectionUtils.isEmpty(brandList)){
+        List<String> brandNames = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(brandList)) {
             brandNames = getBrandNames(brandList);
-        }else {
+        } else {
             brandList = new ArrayList<>();
         }
 
@@ -71,71 +70,50 @@ public class BrandServiceImpl implements BrandService {
         return brandList;
     }
 
+
     @Override
     public APIResponse getBrand(String categoryName, String subcategoryName, String brandName) {
-        if(StringUtils.isBlank(categoryName) || StringUtils.isBlank(subcategoryName) || StringUtils.isBlank(brandName)){
-            logger.error("Error : getBrand categoryName, categoryName , brandName [{}] [{}] [{}] ",categoryName,subcategoryName,brandName);
-            return new APIResponse(FAILURE,new ErrorResponse(ERROR_BRAND_NOT_FOUND.getResponseCode(),ERROR_BRAND_NOT_FOUND.getResponseMessage(),"Empty brand name."));
+        APIResponse apiResponse = getBrands(categoryName, subcategoryName);
+        if (apiResponse.getErrorResponse() != null) {
+            return apiResponse;
         }
-        Category category = categoryRepository.findProductCategoryByName(categoryName);
-        if (category == null){
-            logger.error("Error : getBrand, category doesn't exist for subcategory and brand [{}] [{}]",subcategoryName,brandName);
-            return new APIResponse(FAILURE,new ErrorResponse(ERROR_CATEGORY_NOT_FOUND.getResponseCode(),ERROR_CATEGORY_NOT_FOUND.getResponseMessage()));
-        }
-
-        if(CollectionUtils.isEmpty(category.getSubCategories())){
-            logger.error("Error : getBrand, Subcategories don't exist for subcategory and brand [{}] [{}]",subcategoryName,brandName);
-            return new APIResponse(FAILURE,new ErrorResponse(ERROR_CATEGORY_NOT_FOUND.getResponseCode(),ERROR_CATEGORY_NOT_FOUND.getResponseMessage()));
-        }
-
-        SubCategory subCategory = subCategoryService.getSubCategoryFromList(category.getSubCategories(),subcategoryName);
-        if(subCategory == null){
-            return new APIResponse(FAILURE,new ErrorResponse(ERROR_SUB_CATEGORY_NOT_FOUND.getResponseCode(),ERROR_SUB_CATEGORY_NOT_FOUND.getResponseMessage(),"Subcategory doesn't exist by given name."));
-        }
-        if(CollectionUtils.isEmpty(subCategory.getBrandList())){
-            logger.error("Error : getBrand, Brands don't exist for subcategory and brand [{}] [{}]",subcategoryName,brandName);
-            return new APIResponse(FAILURE,new ErrorResponse(ERROR_BRAND_NOT_FOUND.getResponseCode(),ERROR_BRAND_NOT_FOUND.getResponseMessage()));
-        }
-        Brand brand = getBrandsFromList(subCategory.getBrandList(),brandName);
-        return new APIResponse(SUCCESS,new SuccessResponse(SUCCESS_FOUND_CATEGORY.getResponseCode(),SUCCESS_FOUND_CATEGORY.getResponseMessage()),brand);
+        //noinspection unchecked
+        Brand brand = getBrandsFromList((List<Brand>) apiResponse.getData(), brandName);
+        return new APIResponse(SUCCESS, new SuccessResponse(SUCCESS_FOUND_BRAND.getResponseCode(), SUCCESS_FOUND_BRAND.getResponseMessage()), brand);
     }
 
     @Override
     public APIResponse getBrands(String categoryName, String subcategoryName) {
-        if(StringUtils.isBlank(categoryName) || StringUtils.isBlank(subcategoryName)){
-            logger.error("Error : getBrand categoryName, categoryName  [{}] [{}] ",categoryName,subcategoryName);
-            return new APIResponse(FAILURE,new ErrorResponse(ERROR_BRAND_NOT_FOUND.getResponseCode(),ERROR_BRAND_NOT_FOUND.getResponseMessage(),"Empty category or subcategory name."));
-        }
-        Category category = categoryRepository.findProductCategoryByName(categoryName);
-        if (category == null){
-            logger.error("Error : getBrand, category doesn't exist for subcategory  [{}]",subcategoryName);
-            return new APIResponse(FAILURE,new ErrorResponse(ERROR_CATEGORY_NOT_FOUND.getResponseCode(),ERROR_CATEGORY_NOT_FOUND.getResponseMessage()));
+        if (StringUtils.isBlank(categoryName) || StringUtils.isBlank(subcategoryName)) {
+            logger.error("Error : getBrands categoryName, categoryName  [{}] [{}] ", categoryName, subcategoryName);
+            return new APIResponse(FAILURE, new ErrorResponse(ERROR_BRAND_NOT_FOUND.getResponseCode(), ERROR_BRAND_NOT_FOUND.getResponseMessage(), "Empty category or subcategory name."));
         }
 
-        if(CollectionUtils.isEmpty(category.getSubCategories())){
-            logger.error("Error : getBrand, Subcategories don't exist for subcategory [{}]",subcategoryName);
-            return new APIResponse(FAILURE,new ErrorResponse(ERROR_SUB_CATEGORY_NOT_FOUND.getResponseCode(),ERROR_SUB_CATEGORY_NOT_FOUND.getResponseMessage()));
+        APIResponse apiResponse = subCategoryService.getSubCategories(categoryName);
+        if (apiResponse.getErrorResponse() != null) {
+            return apiResponse;
         }
 
-        SubCategory subCategory = subCategoryService.getSubCategoryFromList(category.getSubCategories(),subcategoryName);
-        if(subCategory == null){
-            return new APIResponse(FAILURE,new ErrorResponse(ERROR_SUB_CATEGORY_NOT_FOUND.getResponseCode(),ERROR_SUB_CATEGORY_NOT_FOUND.getResponseMessage(),"Subcategory doesn't exist by given name."));
+        //noinspection unchecked
+        SubCategory subCategory = subCategoryService.getSubCategoryFromList((List<SubCategory>) apiResponse.getData(), subcategoryName);
+        if (subCategory == null) {
+            return new APIResponse(FAILURE, new ErrorResponse(ERROR_SUB_CATEGORY_NOT_FOUND.getResponseCode(), ERROR_SUB_CATEGORY_NOT_FOUND.getResponseMessage(), "Subcategory doesn't exist by given name."));
         }
-        return new APIResponse(SUCCESS,new SuccessResponse(SUCCESS_FOUND_BRAND.getResponseCode(),SUCCESS_FOUND_BRAND.getResponseMessage()),subCategory.getBrandList());
+        return new APIResponse(SUCCESS, new SuccessResponse(SUCCESS_FOUND_BRAND.getResponseCode(), SUCCESS_FOUND_BRAND.getResponseMessage()), subCategory.getBrandList());
     }
 
     private List<String> getBrandNames(List<Brand> brandList) {
-        return brandList.stream().map(brand -> brand.getName()).collect(Collectors.toList());
+        return brandList.stream().map(Brand::getName).collect(Collectors.toList());
     }
 
     public Brand getBrandsFromList(List<Brand> brandList, String brandName) {
-        Brand foundBrand = null;
+        Brand foundBrand;
         Optional<Brand> brandOptional = brandList.stream().filter(brand -> brand.getName().equalsIgnoreCase(brandName)).findFirst();
-        if(brandOptional.isPresent()){
+        if (brandOptional.isPresent()) {
             foundBrand = brandOptional.get();
             return foundBrand;
-        }else {
-            logger.error("Brand does not exist by name [{}]",brandName);
+        } else {
+            logger.error("Brand does not exist by name [{}]", brandName);
             return null;
         }
     }

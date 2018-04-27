@@ -1,16 +1,10 @@
 package com.utils;
 
-import com.db.BaseProductInfo;
-import com.db.Category;
-import com.db.SubCategory;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.Mappings.*;
 import static com.constants.GASportConstant.EXPIRATION_TIME;
@@ -22,16 +16,15 @@ import static com.constants.GASportConstant.SECRET;
 public class GASportsUtils {
 
     public static String parseToken(String username) {
-        String token = Jwts.builder()
+        return Jwts.builder()
                 .setSubject(username)
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET)
                 .compact();
-        return token;
     }
 
     public static String[] getExcludedURL(){
-        String[] urls = {
+        return new String[]{
                 ADMIN_LOGIN_URL,
                 LOGIN_URL,
                 SIGN_UP_URL,
@@ -40,6 +33,9 @@ public class GASportsUtils {
                 GET_SUB_CATEGORY,
                 GET_SUB_CATEGORIES,
                 GET_BRAND,
+                GET_BRANDS,
+                GET_PRODUCT,
+                GET_PRODUCTS,
                 "/v2/api-docs",
                 "/configuration/ui",
                 "/swagger-resources",
@@ -48,7 +44,6 @@ public class GASportsUtils {
                 "/webjars/**",
                 "/swagger-resources/configuration/ui",
                 "/swagger-ui.html"};
-        return urls;
     }
 
     public static String getUid(){

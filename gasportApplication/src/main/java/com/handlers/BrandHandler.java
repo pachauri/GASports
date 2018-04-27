@@ -2,7 +2,6 @@ package com.handlers;
 
 import com.response.APIResponse;
 import com.service.BrandService;
-import com.service.CategoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,18 +17,20 @@ import static com.Mappings.*;
 @RestController
 public class BrandHandler {
 
-    private Logger logger = LoggerFactory.getLogger(BrandHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(BrandHandler.class);
 
     @Autowired
     private BrandService brandService;
 
     @GetMapping(value = GET_BRAND)
     public APIResponse getBrand(@PathVariable String categoryName, @PathVariable String subcategoryName, @PathVariable String brandName){
+        logger.info("getBrand call started.");
         return brandService.getBrand(categoryName,subcategoryName,brandName);
     }
 
     @GetMapping(value = GET_BRANDS)
     public APIResponse getBrands(@PathVariable String categoryName, @PathVariable String subcategoryName){
+        logger.info("getBrands call started.");
         return brandService.getBrands(categoryName,subcategoryName);
     }
 }
