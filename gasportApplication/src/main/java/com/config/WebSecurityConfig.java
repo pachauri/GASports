@@ -1,6 +1,5 @@
 package com.config;
 
-import com.Mappings;
 import com.filter.JWTAuthenticationFilter;
 import com.filter.JWTAuthorizationFilter;
 import com.utils.GASportsUtils;
@@ -11,7 +10,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  * @author vipul pachauri
@@ -22,9 +20,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsService userDetailsService;
-
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

@@ -28,7 +28,7 @@ import static com.constants.GASportConstant.*;
  */
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private Logger logger = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
+    private final Logger logger = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
 
     private AuthenticationManager authenticationManager;
 

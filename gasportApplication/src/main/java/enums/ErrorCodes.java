@@ -15,7 +15,11 @@ public enum  ErrorCodes {
     ERROR_CATEGORY_NOT_FOUND("-306", "ERROR: No records found for category."),
     ERROR_SUB_CATEGORY_NOT_FOUND("-307", "ERROR: No records found for sub category."),
     ERROR_BRAND_NOT_FOUND("-308", "ERROR: No records found for brand."),
-    ERROR_PRODUCT_NOT_FOUND("-309", "ERROR: No records found for product."),;
+    ERROR_UPDATING_CATEGORY("-309", "ERROR: Updating category."),
+    ERROR_UPDATING_SUB_CATEGORY("-310", "ERROR: Updating sub category."),
+    ERROR_UPDATING_BRAND("-311", "ERROR: Updating brand."),
+    ERROR_UPDATING_PRODUCT_DETAILS("-312", "ERROR: Updating product details."),
+    ERROR_PRODUCT_NOT_FOUND("-313","ERROR : Product not found.") ;
 
 
     private final String responseCode;

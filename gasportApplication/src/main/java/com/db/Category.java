@@ -1,7 +1,6 @@
 package com.db;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -10,7 +9,7 @@ import java.util.List;
  * @author vipul pachauri
  */
 @Document(collection="productInfo")
-public class Category extends BaseProductInfo {
+public class Category extends BaseProductInfo<Category> {
 
     @Id
     private String uid;

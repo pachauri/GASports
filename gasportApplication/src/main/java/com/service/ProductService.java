@@ -11,13 +11,13 @@ import java.util.List;
  */
 public interface ProductService {
 
-    APIResponse addCategory(CategoryDTO categoryDTO);
+    APIResponse addOrUpdateCategory(String oldCategoryName, CategoryDTO categoryDTO);
 
-    APIResponse addSubCategory(SubCategoryDTO subCategoryDTO);
+    APIResponse addOrUpdateSubCategory(String oldSubCategoryName,SubCategoryDTO subCategoryDTO);
 
-    APIResponse addBrand(BrandDTO brandDTO);
+    APIResponse addOrUpdateBrand(String oldBrandName, BrandDTO brandDTO);
 
-    APIResponse addProductDetails(ProductDTO productDTO);
+    APIResponse addOrUpdateProductDetails(String oldProductName, ProductDTO productDTO);
 
     ProductDetails getProductDetailsFromList(List<ProductDetails> productDetails, String productName);
 

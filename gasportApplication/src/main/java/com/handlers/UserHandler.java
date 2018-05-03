@@ -27,7 +27,7 @@ import static com.Mappings.*;
 @RestController
 public class UserHandler {
 
-    private Logger logger = LoggerFactory.getLogger(UserHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(UserHandler.class);
 
     @Autowired
     private UserRepository userRepository;

@@ -12,9 +12,11 @@ import java.util.List;
  */
 public interface SubCategoryService {
 
-    List<SubCategory> createSubCategories(SubCategoryDTO subCategoryDTO, Category category);
-
     SubCategory getSubCategoryFromList(List<SubCategory> subCategories, String subCategoryName);
+
+    APIResponse updateSubCategory(String oldSubCategoryName, SubCategoryDTO subCategoryDTO, Category category);
+
+    APIResponse addSubCategories(SubCategoryDTO subCategoryDTO, Category category);
 
     APIResponse getSubCategoryByName(String categoryName, String subCategoryName);
 

@@ -1,6 +1,6 @@
 package com.ExceptionHandler;
 
-import enums.ErrorCodes; /**
+/**
  * @author vipul pachauri
  */
 public class GASportsException extends RuntimeException {

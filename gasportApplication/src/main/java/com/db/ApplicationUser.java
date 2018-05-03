@@ -4,8 +4,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.constraints.NotNull;
-
 /**
  * @author vipul pachauri
  */
@@ -14,16 +12,21 @@ import javax.validation.constraints.NotNull;
 public class ApplicationUser {
 
     @Id
-    public String id;
+    private String id;
 
     @NotEmpty(message = "User's username must not be blank")
-    public String username;
+    private String username;
 
     @NotEmpty(message = "User's password must not be blank")
-    public String password;
+    private String password;
 
     @NotEmpty(message = "User's email id must not be blank")
-    public String emailId;
+    private String emailId;
+
+    @NotEmpty(message = "User's contact number must not be blank")
+    private String contactNo;
+
+    private ShoppingCart shoppingCart;
 
     public ApplicationUser(){
 
@@ -65,11 +68,19 @@ public class ApplicationUser {
         this.emailId = emailId;
     }
 
-    @Override
-    public String toString() {
-        return "ApplicationUser{" +
-                "username='" + username + '\'' +
-                ", emailId='" + emailId + '\'' +
-                '}';
+    public ShoppingCart getShoppingCart() {
+        return shoppingCart;
+    }
+
+    public void setShoppingCart(ShoppingCart shoppingCart) {
+        this.shoppingCart = shoppingCart;
+    }
+
+    public String getContactNo() {
+        return contactNo;
+    }
+
+    public void setContactNo(String contactNo) {
+        this.contactNo = contactNo;
     }
 }

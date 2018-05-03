@@ -22,7 +22,7 @@ import static java.util.Collections.emptyList;
 @Service
 public class UserServiceImpl implements UserDetailsService {
 
-    private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
 
     @Autowired

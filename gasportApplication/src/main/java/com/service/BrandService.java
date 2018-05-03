@@ -12,11 +12,15 @@ import java.util.List;
  */
 public interface BrandService {
 
-    List<Brand> createBrands(BrandDTO brandDTO, Category category);
 
     Brand getBrandsFromList(List<Brand> brandList, String brandName);
+
+    APIResponse createBrands(BrandDTO brandDTO, Category category);
+
+    APIResponse updateBrands(String oldBrandName, BrandDTO brandDTO, Category category);
 
     APIResponse getBrand(String categoryName, String subcategoryName, String brandName);
 
     APIResponse getBrands(String categoryName, String subcategoryName);
+
 }

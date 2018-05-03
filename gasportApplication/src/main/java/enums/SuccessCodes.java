@@ -12,7 +12,11 @@ public enum SuccessCodes {
     SUCCESS_FOUND_CATEGORY("CF01", "SUCCESS: Category found."),
     SUCCESS_FOUND_SUB_CATEGORY("SCF01", "SUCCESS: Sub Category found."),
     SUCCESS_FOUND_BRAND("BF01", "SUCCESS: Brand found."),
-    SUCCESS_FOUND_PRODUCT("PF01", "SUCCESS: Product found.");
+    SUCCESS_FOUND_PRODUCT("PF01", "SUCCESS: Product found."),
+    SUCCESS_UPDATED_CATEGORY("CU01", "SUCCESS: Category updated successfully."),
+    SUCCESS_UPDATED_SUB_CATEGORY("SCU01", "SUCCESS: Sub Category updated successfully."),
+    SUCCESS_UPDATED_BRAND("BU01", "SUCCESS: Brand updated successfully."),
+    SUCCESS_UPDATED_PRODUCT_DETAILS("PDU01", "SUCCESS: Product Details updated successfully.");
 
 
     private final String responseCode;

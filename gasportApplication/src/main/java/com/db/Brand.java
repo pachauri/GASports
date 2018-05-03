@@ -1,14 +1,11 @@
 package com.db;
 
-import org.springframework.data.annotation.Id;
-
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author vipul pachauri
  */
-public class Brand extends BaseProductInfo {
+public class Brand extends BaseProductInfo<Brand> {
 
     private String name;
 
@@ -41,4 +38,5 @@ public class Brand extends BaseProductInfo {
                 ", productDetails=" + productDetails +
                 '}';
     }
+
 }

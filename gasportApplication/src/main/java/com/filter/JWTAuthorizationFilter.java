@@ -23,7 +23,7 @@ import static com.constants.GASportConstant.*;
  */
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
-    private Logger logger = LoggerFactory.getLogger(JWTAuthorizationFilter.class);
+    private final Logger logger = LoggerFactory.getLogger(JWTAuthorizationFilter.class);
 
     public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);

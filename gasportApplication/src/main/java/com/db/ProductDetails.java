@@ -1,17 +1,16 @@
 package com.db;
 
-import org.springframework.data.annotation.Id;
-
-import java.io.Serializable;
-
 /**
  * @author vipul pachauri
  */
-public class ProductDetails extends BaseProductInfo {
+public class ProductDetails extends BaseProductInfo<ProductDetails> {
 
     private String name;
 
     private String price;
+
+    public ProductDetails() {
+    }
 
     public ProductDetails(String name, String price) {
         this.name = name;

@@ -1,11 +1,13 @@
 package com.serviceImpl;
 
+import com.constants.GASportConstant;
 import com.db.Brand;
 import com.db.Category;
 import com.db.ProductDetails;
 import com.db.SubCategory;
 import com.dto.ProductDTO;
 import com.dto.ProductDetailsDTO;
+import com.repository.CategoryRepository;
 import com.response.APIResponse;
 import com.response.ErrorResponse;
 import com.response.SuccessResponse;
@@ -13,6 +15,7 @@ import com.service.BrandService;
 import com.service.ProductDetailsService;
 import com.service.ProductService;
 import com.service.SubCategoryService;
+import enums.SuccessCodes;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +39,7 @@ import static enums.SuccessCodes.SUCCESS_FOUND_PRODUCT;
 @Service
 public class ProductDetailsServiceImpl implements ProductDetailsService {
 
+
     private final Logger logger = LoggerFactory.getLogger(ProductDetailsServiceImpl.class);
 
     @Autowired
@@ -47,36 +51,8 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
     @Autowired
     private ProductService productService;
 
-    @Override
-    public List<ProductDetails> createProductDetails(ProductDTO productDTO, Category category) {
-        if (CollectionUtils.isEmpty(category.getSubCategories())) {
-            logger.error("SubCategories don't exist for category name [{}]", productDTO.getCategoryName());
-            return null;
-        }
-        SubCategory foundSubCategory = subCategoryService.getSubCategoryFromList(category.getSubCategories(), productDTO.getSubCategoryName());
-
-        if (CollectionUtils.isEmpty(foundSubCategory.getBrandList())) {
-            logger.error("Brands don't exist for sub category name [{}]", productDTO.getSubCategoryName());
-            return null;
-        }
-
-        Brand foundBrand = brandService.getBrandsFromList(foundSubCategory.getBrandList(), productDTO.getBrandName());
-        List<ProductDetails> productDetailsList = foundBrand.getProductDetails();
-        List<String> productNames = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(productDetailsList)) {
-            productNames = productDetailsList.stream().map(ProductDetails::getName).collect(Collectors.toList());
-        } else {
-            productDetailsList = new ArrayList<>();
-        }
-        for (ProductDetailsDTO productDetailsDTO : productDTO.getProductDetails()) {
-            if (CollectionUtils.isEmpty(productNames) || (!CollectionUtils.isEmpty(productNames) && !productNames.contains(productDetailsDTO.getName()))) {
-                ProductDetails productDetails = new ProductDetails(productDetailsDTO.getName(), productDetailsDTO.getPrice());
-                productDetailsList.add(productDetails);
-            }
-        }
-        foundBrand.setProductDetails(productDetailsList);
-        return productDetailsList;
-    }
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Override
     public APIResponse getProductDetailsByName(String categoryName, String subcategoryName, String brandName, String productName) {
@@ -108,5 +84,38 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
         return new APIResponse(SUCCESS, new SuccessResponse(SUCCESS_FOUND_BRAND.getResponseCode(), SUCCESS_FOUND_BRAND.getResponseMessage()), brand.getProductDetails());
     }
 
+    @Override
+    public APIResponse addProductDetails(ProductDTO productDTO, Category category) {
+        logger.info("Getting all sub categories of category name [{}]", category.getName());
+        SubCategory foundSubCategory = subCategoryService.getSubCategoryFromList(category.getSubCategories(), productDTO.getSubCategoryName());
+        Brand brand = brandService.getBrandsFromList(foundSubCategory.getBrandList(), productDTO.getBrandName());
+        List<ProductDetails> productDetailsList = brand.getProductDetails();
+        List<String> productNames = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(productDetailsList)) {
+            productNames = productDetailsList.stream().map(ProductDetails::getName).collect(Collectors.toList());
+        } else {
+            productDetailsList = new ArrayList<>();
+        }
+        for (ProductDetailsDTO productDetailsDTO : productDTO.getProductDetails()) {
+            if (CollectionUtils.isEmpty(productNames) || (!CollectionUtils.isEmpty(productNames) && !productNames.contains(productDetailsDTO.getName()))) {
+                ProductDetails productDetails = new ProductDetails(productDetailsDTO.getName(), productDetailsDTO.getPrice());
+                productDetailsList.add(productDetails);
+            }
+        }
+        brand.setProductDetails(productDetailsList);
+        return new APIResponse(GASportConstant.SUCCESS, new SuccessResponse(SuccessCodes.SUCCESS_ADDED_PRODUCT_DETAILS.getResponseCode(), SuccessCodes.SUCCESS_ADDED_PRODUCT_DETAILS.getResponseMessage()),productDetailsList);
+    }
+
+    @Override
+    public APIResponse updateProductDetails(String oldProductName, ProductDTO productDTO, Category category) {
+        logger.info("Getting all sub categories of category name [{}]", category.getName());
+        SubCategory foundedSubCategory = subCategoryService.getSubCategoryFromList(category.getSubCategories(), productDTO.getSubCategoryName());
+        Brand brand = brandService.getBrandsFromList(foundedSubCategory.getBrandList(), productDTO.getBrandName());
+        ProductDetails product = productService.getProductDetailsFromList(brand.getProductDetails(), oldProductName);
+        product.setName(StringUtils.isNotBlank(productDTO.getProductDetails().get(0).getName()) ? productDTO.getProductDetails().get(0).getName() : product.getName());
+        product.setPrice(StringUtils.isNotBlank(productDTO.getProductDetails().get(0).getPrice()) ? productDTO.getProductDetails().get(0).getPrice() : product.getPrice());
+        categoryRepository.save(category);
+        return new APIResponse(GASportConstant.SUCCESS, new SuccessResponse(SuccessCodes.SUCCESS_UPDATED_PRODUCT_DETAILS.getResponseCode(), SuccessCodes.SUCCESS_UPDATED_PRODUCT_DETAILS.getResponseMessage()));
+    }
 
 }

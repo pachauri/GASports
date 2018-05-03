@@ -1,13 +1,12 @@
 package com.db;
 
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author vipul pachauri
  */
-public class SubCategory extends BaseProductInfo {
+public class SubCategory extends BaseProductInfo<SubCategory> {
 
     private String name;
 

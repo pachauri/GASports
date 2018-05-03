@@ -1,5 +1,7 @@
 package com.serviceImpl;
 
+import com.ExceptionHandler.GASportsException;
+import com.constants.GASportConstant;
 import com.db.Brand;
 import com.db.Category;
 import com.db.SubCategory;
@@ -10,6 +12,8 @@ import com.response.ErrorResponse;
 import com.response.SuccessResponse;
 import com.service.BrandService;
 import com.service.SubCategoryService;
+import enums.ErrorCodes;
+import enums.SuccessCodes;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,13 +31,12 @@ import static com.constants.GASportConstant.SUCCESS;
 import static enums.ErrorCodes.ERROR_BRAND_NOT_FOUND;
 import static enums.ErrorCodes.ERROR_SUB_CATEGORY_NOT_FOUND;
 import static enums.SuccessCodes.SUCCESS_FOUND_BRAND;
-import static enums.SuccessCodes.SUCCESS_FOUND_CATEGORY;
 
 /**
  * @author vipul pachauri
  */
 @Service
-class BrandServiceImpl implements BrandService {
+public class BrandServiceImpl implements BrandService {
 
     private final Logger logger = LoggerFactory.getLogger(BrandServiceImpl.class);
 
@@ -43,14 +46,12 @@ class BrandServiceImpl implements BrandService {
     @Autowired
     private SubCategoryService subCategoryService;
 
+
     @Override
-    public List<Brand> createBrands(BrandDTO brandDTO, Category category) {
+    public APIResponse createBrands(BrandDTO brandDTO, Category category) {
 
         logger.info("Getting all sub categories of category name [{}]", category.getName());
-        if (CollectionUtils.isEmpty(category.getSubCategories())) {
-            logger.error("Error : createBrands() sub categories not found");
-            return null;
-        }
+
         SubCategory foundedSubCategory = subCategoryService.getSubCategoryFromList(category.getSubCategories(), brandDTO.getSubCategoryName());
         List<Brand> brandList = foundedSubCategory.getBrandList();
         List<String> brandNames = new ArrayList<>();
@@ -67,12 +68,27 @@ class BrandServiceImpl implements BrandService {
             }
         }
         foundedSubCategory.setBrandList(brandList);
-        return brandList;
+
+        categoryRepository.save(category);
+        return new APIResponse(GASportConstant.SUCCESS, new SuccessResponse(SuccessCodes.SUCCESS_ADDED_BRAND.getResponseCode(), SuccessCodes.SUCCESS_ADDED_CATEGORY.getResponseMessage()));
+    }
+
+    @Override
+    public APIResponse updateBrands(String oldBrandName, BrandDTO brandDTO, Category category) {
+
+        logger.info("Getting all sub categories of category name [{}]", category.getName());
+        SubCategory foundedSubCategory = subCategoryService.getSubCategoryFromList(category.getSubCategories(), brandDTO.getSubCategoryName());
+        Brand brand = getBrandsFromList(foundedSubCategory.getBrandList(), oldBrandName);
+        brand.setName(brandDTO.getBrandNames().get(0));
+        categoryRepository.save(category);
+        return new APIResponse(GASportConstant.SUCCESS, new SuccessResponse(SuccessCodes.SUCCESS_UPDATED_BRAND.getResponseCode(), SuccessCodes.SUCCESS_UPDATED_BRAND.getResponseMessage()));
+
     }
 
 
     @Override
     public APIResponse getBrand(String categoryName, String subcategoryName, String brandName) {
+
         APIResponse apiResponse = getBrands(categoryName, subcategoryName);
         if (apiResponse.getErrorResponse() != null) {
             return apiResponse;
@@ -107,6 +123,10 @@ class BrandServiceImpl implements BrandService {
     }
 
     public Brand getBrandsFromList(List<Brand> brandList, String brandName) {
+        if(CollectionUtils.isEmpty(brandList)){
+            logger.error("Brands do not exist for [{}]", brandName);
+            throw new GASportsException(ErrorCodes.ERROR_BRAND_NOT_FOUND.getResponseMessage());
+        }
         Brand foundBrand;
         Optional<Brand> brandOptional = brandList.stream().filter(brand -> brand.getName().equalsIgnoreCase(brandName)).findFirst();
         if (brandOptional.isPresent()) {
@@ -114,7 +134,7 @@ class BrandServiceImpl implements BrandService {
             return foundBrand;
         } else {
             logger.error("Brand does not exist by name [{}]", brandName);
-            return null;
+            throw new GASportsException(ErrorCodes.ERROR_BRAND_NOT_FOUND.getResponseMessage());
         }
     }
 }

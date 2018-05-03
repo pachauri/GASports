@@ -1,6 +1,7 @@
 package com.serviceImpl;
 
 import com.ExceptionHandler.GASportsException;
+import com.constants.GASportConstant;
 import com.db.Category;
 import com.db.SubCategory;
 import com.dto.SubCategoryDTO;
@@ -10,6 +11,8 @@ import com.response.ErrorResponse;
 import com.response.SuccessResponse;
 import com.service.CategoryService;
 import com.service.SubCategoryService;
+import enums.ErrorCodes;
+import enums.SuccessCodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +45,17 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     private CategoryService categoryService;
 
     @Override
-    public List<SubCategory> createSubCategories(SubCategoryDTO subCategoryDTO, Category category) {
+    public APIResponse updateSubCategory(String oldSubCategoryName, SubCategoryDTO subCategoryDTO, Category category) {
+        SubCategory subCategory = getSubCategoryFromList(category.getSubCategories(),oldSubCategoryName);
+        subCategory.setName(subCategoryDTO.getSubcategoryNames().get(0));
+        categoryRepository.save(category);
+        return new APIResponse(GASportConstant.SUCCESS, new SuccessResponse(SuccessCodes.SUCCESS_UPDATED_SUB_CATEGORY.getResponseCode(), SuccessCodes.SUCCESS_UPDATED_SUB_CATEGORY.getResponseMessage()));
+
+    }
+
+    @Override
+    public APIResponse addSubCategories(SubCategoryDTO subCategoryDTO, Category category) {
+
         try {
             //Get all sub categories of founded category
             logger.info("Getting all sub categories of category name [{}]", category.getName());
@@ -58,11 +71,16 @@ public class SubCategoryServiceImpl implements SubCategoryService {
                     subCategoryList.add(subCategory);
                 }
             }
-            return subCategoryList;
+            if (CollectionUtils.isEmpty(subCategoryList)) {
+                return new APIResponse(GASportConstant.FAILURE, new ErrorResponse(ErrorCodes.ERROR_ADDING_SUB_CATEGORY.getResponseCode(), ErrorCodes.ERROR_ADDING_SUB_CATEGORY.getResponseMessage()));
+            }
+            category.setSubCategories(subCategoryList);
+            categoryRepository.save(category);
+            return new APIResponse(GASportConstant.SUCCESS, new SuccessResponse(SuccessCodes.SUCCESS_ADDED_SUB_CATEGORY.getResponseCode(), SuccessCodes.SUCCESS_ADDED_CATEGORY.getResponseMessage()));
         } catch (Exception e) {
-            logger.error("Error : createSubCategories [{}]", e.getMessage());
-            throw new GASportsException(e.getMessage());
+            logger.error("Error : createOrUpdateSubCategories [{}]", e.getMessage());
         }
+        return new APIResponse(GASportConstant.FAILURE, new ErrorResponse(ErrorCodes.ERROR_ADDING_SUB_CATEGORY.getResponseCode(), ErrorCodes.ERROR_ADDING_SUB_CATEGORY.getResponseMessage()));
     }
 
 
@@ -78,6 +96,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         if (subCategory == null) {
             return new APIResponse(FAILURE, new ErrorResponse(ERROR_SUB_CATEGORY_NOT_FOUND.getResponseCode(), ERROR_SUB_CATEGORY_NOT_FOUND.getResponseMessage(), "Subcategory doesn't exist by given name."));
         }
+        logger.info("Subcategory found successfully. [{}]",subCategory.getName());
         return new APIResponse(SUCCESS, new SuccessResponse(SUCCESS_FOUND_CATEGORY.getResponseCode(), SUCCESS_FOUND_CATEGORY.getResponseMessage()), subCategory);
     }
 
@@ -93,6 +112,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
             logger.error("Error : getSubCategories , Categories don't exist for category. [{}] ", category.getName());
             return new APIResponse(FAILURE, new ErrorResponse(ERROR_SUB_CATEGORY_NOT_FOUND.getResponseCode(), ERROR_SUB_CATEGORY_NOT_FOUND.getResponseMessage()));
         }
+
         return new APIResponse(SUCCESS, new SuccessResponse(SUCCESS_FOUND_SUB_CATEGORY.getResponseCode(), SUCCESS_FOUND_SUB_CATEGORY.getResponseMessage()), subCategories);
     }
 
@@ -101,6 +121,10 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     }
 
     public SubCategory getSubCategoryFromList(List<SubCategory> subCategories, String subCategoryName) {
+        if(CollectionUtils.isEmpty(subCategories)){
+            logger.error("SubCategories does not exist for [{}]", subCategoryName);
+            throw new GASportsException(ErrorCodes.ERROR_SUB_CATEGORY_NOT_FOUND.getResponseMessage());
+        }
         Optional<SubCategory> subCategoryOptional = subCategories.stream().filter(subCategory -> subCategory.getName().equalsIgnoreCase(subCategoryName)).findFirst();
         SubCategory foundSubCategory;
         if (subCategoryOptional.isPresent()) {
@@ -108,7 +132,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
             return foundSubCategory;
         } else {
             logger.error("SubCategory does not exist by name [{}]", subCategoryName);
-            return null;
+            throw new GASportsException(ErrorCodes.ERROR_SUB_CATEGORY_NOT_FOUND.getResponseMessage());
         }
     }
 }

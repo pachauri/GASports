@@ -10,9 +10,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
-public class GASportApplication implements ApplicationRunner{
+public class GASportApplication implements ApplicationRunner {
 
-    private static Logger logger = LoggerFactory.getLogger(GASportApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(GASportApplication.class);
 
     public static void main(String[] args) {
 

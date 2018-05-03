@@ -1,9 +1,10 @@
 package com.db;
 
+
 /**
  * @author vipul pachauri
  */
-public class BaseProductInfo {
+public  class BaseProductInfo<T> {
 
     private Long creationDate;
 
@@ -24,4 +25,5 @@ public class BaseProductInfo {
     public void setModificationDate(Long modificationDate) {
         this.modificationDate = modificationDate;
     }
+
 }
