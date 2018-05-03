@@ -51,7 +51,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         shoppingCart.setProductDetails(productDetailsList);
         applicationUser.setShoppingCart(shoppingCart);
-        //userRepository.save(applicationUser);
+        userRepository.save(applicationUser);
         return new APIResponse(SUCCESS,new SuccessResponse("1","User Details"),applicationUser);
     }
 }

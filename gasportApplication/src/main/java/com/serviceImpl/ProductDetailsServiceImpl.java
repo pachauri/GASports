@@ -103,6 +103,7 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
             }
         }
         brand.setProductDetails(productDetailsList);
+        categoryRepository.save(category);
         return new APIResponse(GASportConstant.SUCCESS, new SuccessResponse(SuccessCodes.SUCCESS_ADDED_PRODUCT_DETAILS.getResponseCode(), SuccessCodes.SUCCESS_ADDED_PRODUCT_DETAILS.getResponseMessage()),productDetailsList);
     }
 
