@@ -1,6 +1,7 @@
 package com.service;
 
-import com.dto.ShoppingCartDTO;
+import com.db.CartItem;
+import com.db.ShoppingCart;
 import com.response.APIResponse;
 
 /**
@@ -8,5 +9,10 @@ import com.response.APIResponse;
  */
 public interface ShoppingCartService {
 
-    APIResponse addProductInCart(ShoppingCartDTO shoppingCart);
+    APIResponse addProductInCart(ShoppingCart shoppingCart);
+
+    APIResponse removeProductfromCart(CartItem cartItem);
+
+    APIResponse cartUpdateProductCount(CartItem cartItem);
+
 }

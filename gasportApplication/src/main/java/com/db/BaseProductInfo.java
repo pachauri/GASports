@@ -1,6 +1,8 @@
 package com.db;
 
 
+import java.sql.Timestamp;
+
 /**
  * @author vipul pachauri
  */
@@ -14,16 +16,18 @@ public  class BaseProductInfo<T> {
         return creationDate;
     }
 
-    public void setCreationDate(Long creationDate) {
-        this.creationDate = creationDate;
+    public BaseProductInfo setCreationDate() {
+        this.creationDate = new Timestamp(System.currentTimeMillis()).getTime();
+        return this;
     }
 
     public Long getModificationDate() {
         return modificationDate;
     }
 
-    public void setModificationDate(Long modificationDate) {
-        this.modificationDate = modificationDate;
+    public BaseProductInfo setModificationDate() {
+        this.modificationDate = this.creationDate = new Timestamp(System.currentTimeMillis()).getTime();
+        return this;
     }
 
 }

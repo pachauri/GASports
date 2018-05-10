@@ -1,15 +1,24 @@
 package com.db;
 
+import enums.UserRole;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author vipul pachauri
  */
 
 @Document(collection = "user")
-public class ApplicationUser {
+public class ApplicationUser implements UserDetails {
 
     @Id
     private String id;
@@ -26,6 +35,8 @@ public class ApplicationUser {
     @NotEmpty(message = "User's contact number must not be blank")
     private String contactNo;
 
+    private UserRole userRole;
+
     private ShoppingCart shoppingCart;
 
     public ApplicationUser(){
@@ -40,8 +51,35 @@ public class ApplicationUser {
         return username;
     }
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
+
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
+        authorities.add(new SimpleGrantedAuthority(this.userRole.getRole()));
+        return authorities;
     }
 
     public String getPassword() {
@@ -82,5 +120,13 @@ public class ApplicationUser {
 
     public void setContactNo(String contactNo) {
         this.contactNo = contactNo;
+    }
+
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(UserRole userRole) {
+        this.userRole = UserRole.USER;
     }
 }

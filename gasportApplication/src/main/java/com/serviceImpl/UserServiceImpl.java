@@ -4,6 +4,9 @@ package com.serviceImpl;
 import com.ExceptionHandler.GASportsException;
 import com.db.ApplicationUser;
 import com.repository.UserRepository;
+import enums.UserRole;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +40,6 @@ public class UserServiceImpl implements UserDetailsService {
             throw new GASportsException("User not found by username.");
         }
         logger.info("User found by username [{}]",username);
-        return new User(applicationUser.getUsername(), applicationUser.getPassword(), emptyList());
+        return new User(applicationUser.getUsername(), applicationUser.getPassword(), applicationUser.getAuthorities());
     }
 }

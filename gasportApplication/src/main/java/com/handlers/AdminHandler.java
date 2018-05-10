@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ import static com.Mappings.ADD_CATEGORY;
  */
 @RestController
 public class AdminHandler {
+
 
     private final Logger logger = LoggerFactory.getLogger(AdminHandler.class);
 
@@ -110,5 +112,11 @@ public class AdminHandler {
         return productService.addOrUpdateProductDetails(oldProductName,productDTO);
     }
 
+   // @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping(value = "/ga-sports/admin/user")
+    public void userDetails(){
+        logger.info("user info");
+        System.out.println("Success");
+    }
 
 }

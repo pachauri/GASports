@@ -16,7 +16,13 @@ public enum SuccessCodes {
     SUCCESS_UPDATED_CATEGORY("CU01", "SUCCESS: Category updated successfully."),
     SUCCESS_UPDATED_SUB_CATEGORY("SCU01", "SUCCESS: Sub Category updated successfully."),
     SUCCESS_UPDATED_BRAND("BU01", "SUCCESS: Brand updated successfully."),
-    SUCCESS_UPDATED_PRODUCT_DETAILS("PDU01", "SUCCESS: Product Details updated successfully.");
+    SUCCESS_UPDATED_PRODUCT_DETAILS("PDU01", "SUCCESS: Product Details updated successfully."),
+    SUCCESS_ADDED_PRODUCT_CART("APC01", "SUCCESS: Product added in cart successfully."),
+    SUCCESS_REMOVED_PRODUCT_CART("RPC01", "SUCCESS: Product removed from cart successfully."),
+    SUCCEES_USER_REGISTRATION("US01","SUCCESS: User registered successfully."),
+    SUCCEES_USER_LOGIN("UL01","SUCCESS: User logged in successfully."),
+    SUCCESS_LOGOUT("UL01", "SUCCESS: User logged out successfully."),
+    SUCCESS_UPDATED_PRODUCT_COUNT("IPC01", "SUCCESS: Product count updated successfully.");
 
 
     private final String responseCode;

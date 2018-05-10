@@ -19,7 +19,13 @@ public enum  ErrorCodes {
     ERROR_UPDATING_SUB_CATEGORY("-310", "ERROR: Updating sub category."),
     ERROR_UPDATING_BRAND("-311", "ERROR: Updating brand."),
     ERROR_UPDATING_PRODUCT_DETAILS("-312", "ERROR: Updating product details."),
-    ERROR_PRODUCT_NOT_FOUND("-313","ERROR : Product not found.") ;
+    ERROR_PRODUCT_NOT_FOUND("-313","ERROR : Product not found."),
+    ERROR_ADDING_PRODUCT_CART("-314", "ERROR: Adding product in cart."),
+    ERROR_REMOVING_PRODUCT_CART("-315", "ERROR: Removing product from cart."),
+    ERROR_USER_REGISTRATION("-316", "ERROR: User registration." ),
+    ERROR_USER_LOGIN("-317", "ERROR: User login." ),
+    ERROR_UPDATING_PRODUCT_COUNT("-318", "ERROR: Updating product count.");
+
 
 
     private final String responseCode;
