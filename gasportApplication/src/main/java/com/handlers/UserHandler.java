@@ -70,7 +70,7 @@ public class UserHandler {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             userRepository.save(user);
             logger.info("User registration successful. [{}]",user);
-            emailService.sendMail(user.getEmailId());
+            //emailService.sendMail(user.getEmailId());
             return new APIResponse(SUCCESS,new SuccessResponse(SuccessCodes.SUCCEES_USER_REGISTRATION.getResponseCode(),SuccessCodes.SUCCEES_USER_REGISTRATION.getResponseMessage()),user);
         }catch (Exception e){
             logger.error("ERROR : register [{}]",e.getStackTrace());
