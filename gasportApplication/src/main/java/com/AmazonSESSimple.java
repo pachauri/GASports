@@ -33,7 +33,7 @@ public class AmazonSESSimple {
 
     public static void main(String[] args) throws IOException {
 
-        System.setProperty("aws.accessKeyId", "AKIAJV52B7RKVXIQOYTA");
+        System.setProperty("aws.accessKey", "AKIAJV52B7RKVXIQOYTA");
         System.setProperty("aws.secretKey", "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");
 
         try {

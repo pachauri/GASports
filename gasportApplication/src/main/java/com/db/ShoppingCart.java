@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * @author vipul pachauri
  */
-public class ShoppingCart extends BaseProductInfo {
+public class ShoppingCart extends BaseProductInfo<ShoppingCart> {
 
     private List<CartItem> cartItems;
 

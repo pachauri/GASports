@@ -6,11 +6,19 @@ import java.sql.Timestamp;
 /**
  * @author vipul pachauri
  */
-public  class BaseProductInfo<T> {
+public abstract class BaseProductInfo<T> {
 
     private Long creationDate;
 
     private Long modificationDate;
+
+    BaseProductInfo(Long creationDate,Long modificationDate){
+        this.creationDate = creationDate;
+        this.modificationDate = modificationDate;
+    }
+
+    protected BaseProductInfo() {
+    }
 
     public Long getCreationDate() {
         return creationDate;

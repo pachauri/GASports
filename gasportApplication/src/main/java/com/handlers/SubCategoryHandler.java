@@ -5,6 +5,7 @@ import com.service.SubCategoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,5 +33,11 @@ public class SubCategoryHandler {
     public APIResponse getSubCategories(@PathVariable String categoryName){
         logger.info("getSubCategories call started.");
         return subCategoryService.getSubCategories(categoryName);
+    }
+
+    @DeleteMapping(value = DELETE_SUB_CATEGORY)
+    public APIResponse delSubCategory(@PathVariable String categoryName, @PathVariable String subcategoryName){
+        logger.info("delSubCategory call started.");
+        return subCategoryService.deleteSubCategory(categoryName,subcategoryName);
     }
 }

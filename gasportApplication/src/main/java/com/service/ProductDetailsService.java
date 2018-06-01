@@ -16,4 +16,6 @@ public interface ProductDetailsService {
     APIResponse addProductDetails(ProductDTO productDTO, Category data);
 
     APIResponse updateProductDetails(String oldProductName, ProductDTO productDTO, Category data);
+
+    APIResponse deleteProduct(String categoryName, String subcategoryName, String brandName, String productName);
 }

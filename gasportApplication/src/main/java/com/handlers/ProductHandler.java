@@ -5,6 +5,7 @@ import com.service.ProductDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,5 +35,12 @@ public class ProductHandler {
                                    @PathVariable String brandName){
         logger.info("getProductsDetails call started.");
         return productDetailsService.getAllProductsDetails(categoryName,subcategoryName,brandName);
+    }
+
+    @DeleteMapping(value = DELETE_PRODUCT)
+    public APIResponse delProduct(@PathVariable String categoryName, @PathVariable String subcategoryName,
+                                  @PathVariable String brandName,@PathVariable String productName){
+        logger.info("delProduct call started.");
+        return productDetailsService.deleteProduct(categoryName,subcategoryName,brandName,productName);
     }
 }

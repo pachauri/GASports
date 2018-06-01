@@ -1,6 +1,7 @@
 package com.db;
 
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -13,6 +14,7 @@ public class SubCategory extends BaseProductInfo<SubCategory> {
     private List<Brand> brandList;
 
     public SubCategory(String name) {
+        super(new Timestamp(System.currentTimeMillis()).getTime(),new Timestamp(System.currentTimeMillis()).getTime());
         this.name = name;
     }
 

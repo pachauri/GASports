@@ -5,6 +5,7 @@ import com.service.BrandService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,5 +33,11 @@ public class BrandHandler {
     public APIResponse getBrands(@PathVariable String categoryName, @PathVariable String subcategoryName){
         logger.info("getBrands call started.");
         return brandService.getBrands(categoryName,subcategoryName);
+    }
+
+    @DeleteMapping(value = DELETE_BRAND)
+    public APIResponse delBrand(@PathVariable String categoryName, @PathVariable String subcategoryName, @PathVariable String brandName){
+        logger.info("delBrand call started.");
+        return brandService.deleteBrand(categoryName,subcategoryName,brandName);
     }
 }

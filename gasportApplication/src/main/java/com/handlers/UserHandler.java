@@ -85,12 +85,12 @@ public class UserHandler {
                              HttpServletResponse res) {
         logger.info("Login call started. [{}]",applicationUser);
         if(applicationUser == null || StringUtils.isBlank(applicationUser.getUsername()) || StringUtils.isBlank(applicationUser.getPassword())){
-           throw new GASportsException("Invalid Username or password");
+            return new APIResponse(FAILURE,new ErrorResponse(ErrorCodes.ERROR_USER_LOGIN.getResponseCode(),ErrorCodes.ERROR_USER_LOGIN.getResponseMessage(),"Invalid Username or password."));
         }
 
         UserDetails user = userDetailsService.loadUserByUsername(applicationUser.getUsername());
         if (user == null) {
-            throw new GASportsException("User not found by username.");
+            return new APIResponse(FAILURE,new ErrorResponse(ErrorCodes.ERROR_USER_LOGIN.getResponseCode(),ErrorCodes.ERROR_USER_LOGIN.getResponseMessage(),"User not found by username."));
         }
 
         String encodedPassword = user.getPassword();
@@ -98,14 +98,14 @@ public class UserHandler {
         boolean passwordMatched = bCryptPasswordEncoder.matches(password,encodedPassword);
 
         if(!passwordMatched){
-            throw new GASportsException("Error in authentication | Invalid Password.");
+            return new APIResponse(FAILURE,new ErrorResponse(ErrorCodes.ERROR_USER_LOGIN.getResponseCode(),ErrorCodes.ERROR_USER_LOGIN.getResponseMessage(),"Error in authentication | Invalid Password."));
         }
 
         Claims claims = Jwts.claims().setSubject(applicationUser.getUsername());
         claims.put(AUTHORITIES, user.getAuthorities());
 
         String accessToken = GASportsUtils.createToken(user.getUsername(),claims);
-        return new APIResponse("Login Successful.", accessToken);
+        return new APIResponse(SUCCESS,new SuccessResponse(SuccessCodes.SUCCEES_USER_LOGIN.getResponseCode(),SuccessCodes.SUCCEES_USER_LOGIN.getResponseMessage()), accessToken);
 
     }
 

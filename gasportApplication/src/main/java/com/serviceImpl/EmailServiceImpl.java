@@ -4,7 +4,7 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
 import com.amazonaws.services.simpleemail.model.*;
-import com.config.AWSConfig;
+import com.config.AmazonClient;
 import com.constants.GASportConstant;
 import com.db.Email;
 import com.service.EmailService;
@@ -22,7 +22,7 @@ public class EmailServiceImpl implements EmailService {
     private Logger logger = LoggerFactory.getLogger(EmailServiceImpl.class);
 
     @Autowired
-    private AWSConfig awsConfig;
+    private AmazonClient awsConfig;
 
     @Override
     public void sendMail(String emailId) {
@@ -41,7 +41,7 @@ public class EmailServiceImpl implements EmailService {
     private void sendMail(Email email){
 
         logger.info("Sending Mail.");
-        System.setProperty("aws.accessKeyId", awsConfig.getAccessKeyId());
+        System.setProperty("aws.accessKeyId", awsConfig.getAccessKey());
         System.setProperty("aws.secretKey", awsConfig.getSecretKey());
 
         try {

@@ -21,4 +21,6 @@ public interface SubCategoryService {
     APIResponse getSubCategoryByName(String categoryName, String subCategoryName);
 
     APIResponse getSubCategories(String categoryName);
+
+    APIResponse deleteSubCategory(String categoryName, String subcategoryName);
 }

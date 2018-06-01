@@ -57,7 +57,8 @@ public class GASportsUtils {
                 "/swagger-ui.html",
                 "/webjars/**",
                 "/swagger-resources/configuration/ui",
-                "/swagger-ui.html"};
+                "/swagger-ui.html",
+                "/storage/uploadFile"};
     }
 
     public static String getUid(){

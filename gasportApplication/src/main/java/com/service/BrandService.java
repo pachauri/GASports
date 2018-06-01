@@ -13,7 +13,7 @@ import java.util.List;
 public interface BrandService {
 
 
-    Brand getBrandsFromList(List<Brand> brandList, String brandName);
+    Brand getBrandFromList(List<Brand> brandList, String brandName);
 
     APIResponse createBrands(BrandDTO brandDTO, Category category);
 
@@ -23,4 +23,5 @@ public interface BrandService {
 
     APIResponse getBrands(String categoryName, String subcategoryName);
 
+    APIResponse deleteBrand(String categoryName, String subcategoryName, String brandName);
 }

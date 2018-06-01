@@ -27,6 +27,7 @@ import static com.constants.GASportConstant.FAILURE;
 import static com.constants.GASportConstant.SUCCESS;
 import static enums.ErrorCodes.ERROR_CATEGORY_NOT_FOUND;
 import static enums.ErrorCodes.ERROR_UPDATING_CATEGORY;
+import static enums.SuccessCodes.SUCCESS_DELETED_CATEGORY;
 import static enums.SuccessCodes.SUCCESS_FOUND_CATEGORY;
 import static enums.SuccessCodes.SUCCESS_UPDATED_CATEGORY;
 
@@ -110,6 +111,17 @@ public class CategoryServiceImpl implements CategoryService {
         category.setName(categoryDTO.getCategoryNames().get(0));
         categoryRepository.save(category);
         return new APIResponse(SUCCESS, new SuccessResponse(SUCCESS_UPDATED_CATEGORY.getResponseCode(), SUCCESS_UPDATED_CATEGORY.getResponseMessage()), category);
+    }
+
+    @Override
+    public APIResponse deleteCategory(String categoryName) {
+        APIResponse apiResponse =  getCategoryByName(categoryName);
+        if(apiResponse.getErrorResponse() != null){
+            return apiResponse;
+        }
+        Category category = (Category) apiResponse.getData();
+        categoryRepository.delete(category);
+        return new APIResponse(SUCCESS, new SuccessResponse(SUCCESS_DELETED_CATEGORY.getResponseCode(), SUCCESS_DELETED_CATEGORY.getResponseMessage()));
     }
 
 

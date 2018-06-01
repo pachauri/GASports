@@ -20,5 +20,5 @@ public class GASportConstant {
     public static final String BODY = "Congratulations ! You have successfully registered with GASports.";
 
 
-
+    public static final int S3_SOCKET_TIMEOUT = 20 * 1000;
 }

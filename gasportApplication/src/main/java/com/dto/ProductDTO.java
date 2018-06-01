@@ -1,6 +1,7 @@
 package com.dto;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -52,6 +53,7 @@ public class ProductDTO {
     public void setProductDetails(List<ProductDetailsDTO> productDetails) {
         this.productDetails = productDetails;
     }
+
 
     @Override
     public String toString() {

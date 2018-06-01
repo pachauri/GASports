@@ -15,4 +15,6 @@ public interface CategoryService {
     APIResponse addCategory(CategoryDTO categoryDTO);
 
     APIResponse updateCategory(String categoryName, CategoryDTO categoryDTO);
+
+    APIResponse deleteCategory(String categoryName);
 }

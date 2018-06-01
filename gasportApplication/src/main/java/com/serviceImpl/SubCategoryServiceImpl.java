@@ -5,6 +5,7 @@ import com.constants.GASportConstant;
 import com.db.Category;
 import com.db.SubCategory;
 import com.dto.SubCategoryDTO;
+import com.mongodb.BasicDBObject;
 import com.repository.CategoryRepository;
 import com.response.APIResponse;
 import com.response.ErrorResponse;
@@ -16,19 +17,21 @@ import enums.SuccessCodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.constants.GASportConstant.FAILURE;
 import static com.constants.GASportConstant.SUCCESS;
 import static enums.ErrorCodes.ERROR_SUB_CATEGORY_NOT_FOUND;
-import static enums.SuccessCodes.SUCCESS_FOUND_CATEGORY;
-import static enums.SuccessCodes.SUCCESS_FOUND_SUB_CATEGORY;
+import static enums.SuccessCodes.*;
 
 /**
  * @author vipul pachauri
@@ -43,6 +46,9 @@ public class SubCategoryServiceImpl implements SubCategoryService {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Override
     public APIResponse updateSubCategory(String oldSubCategoryName, SubCategoryDTO subCategoryDTO, Category category) {
@@ -63,8 +69,10 @@ public class SubCategoryServiceImpl implements SubCategoryService {
             List<String> subCatNames = new ArrayList<>();
             if (!CollectionUtils.isEmpty(subCategoryList)) {
                 subCatNames = getSubCategoryNames(subCategoryList);
+            }else {
+                subCategoryList = new ArrayList<>();
             }
-            subCategoryList = new ArrayList<>();
+
             for (String name : subCategoryDTO.getSubcategoryNames()) {
                 if (CollectionUtils.isEmpty(subCatNames) || (!CollectionUtils.isEmpty(subCatNames) && !subCatNames.contains(name))) {
                     SubCategory subCategory = new SubCategory(name);
@@ -76,7 +84,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
             }
             category.setSubCategories(subCategoryList);
             categoryRepository.save(category);
-            return new APIResponse(GASportConstant.SUCCESS, new SuccessResponse(SuccessCodes.SUCCESS_ADDED_SUB_CATEGORY.getResponseCode(), SuccessCodes.SUCCESS_ADDED_CATEGORY.getResponseMessage()));
+            return new APIResponse(GASportConstant.SUCCESS, new SuccessResponse(SuccessCodes.SUCCESS_ADDED_SUB_CATEGORY.getResponseCode(), SuccessCodes.SUCCESS_ADDED_SUB_CATEGORY.getResponseMessage()));
         } catch (Exception e) {
             logger.error("Error : createOrUpdateSubCategories [{}]", e.getMessage());
         }
@@ -114,6 +122,20 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         }
 
         return new APIResponse(SUCCESS, new SuccessResponse(SUCCESS_FOUND_SUB_CATEGORY.getResponseCode(), SUCCESS_FOUND_SUB_CATEGORY.getResponseMessage()), subCategories);
+    }
+
+    @Override
+    public APIResponse deleteSubCategory(String categoryName, String subcategoryName) {
+        APIResponse apiResponse = getSubCategoryByName(categoryName,subcategoryName);
+        if(apiResponse.getErrorResponse() != null){
+            return apiResponse;
+        }
+
+        Update update =
+                new Update().pull("subCategories",new BasicDBObject("name", subcategoryName));
+
+        mongoTemplate.updateMulti(null, update, Category.class);
+        return new APIResponse(SUCCESS, new SuccessResponse(SUCCESS_DELETED_SUB_CATEGORY.getResponseCode(), SUCCESS_DELETED_SUB_CATEGORY.getResponseMessage()));
     }
 
     private List<String> getSubCategoryNames(List<SubCategory> subCategoryList) {

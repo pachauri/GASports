@@ -22,7 +22,10 @@ public enum SuccessCodes {
     SUCCEES_USER_REGISTRATION("US01","SUCCESS: User registered successfully."),
     SUCCEES_USER_LOGIN("UL01","SUCCESS: User logged in successfully."),
     SUCCESS_LOGOUT("UL01", "SUCCESS: User logged out successfully."),
-    SUCCESS_UPDATED_PRODUCT_COUNT("IPC01", "SUCCESS: Product count updated successfully.");
+    SUCCESS_UPDATED_PRODUCT_COUNT("IPC01", "SUCCESS: Product count updated successfully."),
+    SUCCESS_DELETED_CATEGORY("CD01", "SUCCESS: Category deleted successfully."),
+    SUCCESS_DELETED_SUB_CATEGORY("SCD01", "SUCCESS: Sub Category deleted successfully."),
+    SUCCESS_DELETED_PRODUCT_DETAILS("SPD01", "SUCCESS: Product Details deleted successfully.");
 
 
     private final String responseCode;

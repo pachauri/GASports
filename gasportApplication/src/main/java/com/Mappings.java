@@ -25,19 +25,22 @@ public class Mappings {
     //Category Details
     public static final String GET_CATEGORY         = "/ga-sports/category/{categoryName}";
     public static final String GET_CATEGORIES       = "/ga-sports/category";
+    public static final String DELETE_CATEGORY      = "/ga-sports/admin/category/{categoryName}";
 
     //Sub Category Details
     public static final String GET_SUB_CATEGORY     = "/ga-sports/subcategory/{categoryName}/{subcategoryName}";
     public static final String GET_SUB_CATEGORIES   = "/ga-sports/subcategory/{categoryName}";
+    public static final String DELETE_SUB_CATEGORY      = "/ga-sports/admin/subcategory/{categoryName}/{subcategoryName}";
 
     //Brand Details
     public static final String GET_BRAND            = "/ga-sports/brand/{categoryName}/{subcategoryName}/{brandName}";
     public static final String GET_BRANDS           = "/ga-sports/brand/{categoryName}/{subcategoryName}";
+    public static final String DELETE_BRAND         = "/ga-sports/brand/{categoryName}/{subcategoryName}/{brandName}";
 
     //Product Details
     public static final String GET_PRODUCT          = "/ga-sports/product/{categoryName}/{subcategoryName}/{brandName}/{productName}";
     public static final String GET_PRODUCTS         = "/ga-sports/product/{categoryName}/{subcategoryName}/{brandName}";
-
+    public static final String DELETE_PRODUCT        = "/ga-sports/brand/{categoryName}/{subcategoryName}/{brandName}/{productName}";
 
     public static final String CART_ADD_PRODUCT     = "/ga-sports/user/cart/product";
     public static final String CART_REMOVE_PRODUCT  = "/ga-sports/user/cart/product";
