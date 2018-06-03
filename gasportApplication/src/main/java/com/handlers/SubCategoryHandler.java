@@ -34,10 +34,4 @@ public class SubCategoryHandler {
         logger.info("getSubCategories call started.");
         return subCategoryService.getSubCategories(categoryName);
     }
-
-    @DeleteMapping(value = DELETE_SUB_CATEGORY)
-    public APIResponse delSubCategory(@PathVariable String categoryName, @PathVariable String subcategoryName){
-        logger.info("delSubCategory call started.");
-        return subCategoryService.deleteSubCategory(categoryName,subcategoryName);
-    }
 }

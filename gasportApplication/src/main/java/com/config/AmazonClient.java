@@ -12,6 +12,10 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.constants.GASportConstant;
+import com.utils.GASportsUtils;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -21,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Date;
 
@@ -32,13 +37,11 @@ public class AmazonClient {
 
     private AmazonS3 s3client;
 
-    @Value("${aws.accessKey}")
     private String accessKey;
 
-    @Value("${aws.secretKey}")
     private String secretKey;
 
-    @Value("${aws.accessKey}")
+    @Value("${aws.email}")
     private String email;
 
     @Value("${aws.endpointUrl}")
@@ -46,6 +49,9 @@ public class AmazonClient {
 
     @Value("${aws.bucketName}")
     private String bucketName;
+
+    @Value("${aws.configPath}")
+    private String configPath;
 
     public String getAccessKey() {
         return accessKey;
@@ -92,6 +98,8 @@ public class AmazonClient {
         ClientConfiguration clientCfg = new ClientConfiguration();
         clientCfg.setConnectionTimeout(ClientConfiguration.DEFAULT_CONNECTION_TIMEOUT);
         clientCfg.setSocketTimeout(GASportConstant.S3_SOCKET_TIMEOUT);
+        //Set access key & secret key
+        fromJSON();
         BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
         AmazonS3 s3Client = new AmazonS3Client(basicAWSCredentials,clientCfg);
         this.s3client = s3Client;
@@ -134,5 +142,22 @@ public class AmazonClient {
         String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
         s3client.deleteObject(new DeleteObjectRequest(bucketName + "/", fileName));
         return "Successfully deleted";
+    }
+
+    private void fromJSON() {
+        JSONParser parser = new JSONParser();
+        try {
+            Object object =  parser.parse(new FileReader(configPath));
+            JSONObject jsonObject = (JSONObject) object;
+            JSONObject config = (JSONObject) jsonObject.get("awsConfig");
+            String accessKey = (String) config.get("accessKey");
+            this.accessKey = accessKey;
+            String secretKey = (String) config.get("secretKey");
+            this.secretKey = secretKey;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 }

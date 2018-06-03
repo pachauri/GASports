@@ -34,10 +34,4 @@ public class BrandHandler {
         logger.info("getBrands call started.");
         return brandService.getBrands(categoryName,subcategoryName);
     }
-
-    @DeleteMapping(value = DELETE_BRAND)
-    public APIResponse delBrand(@PathVariable String categoryName, @PathVariable String subcategoryName, @PathVariable String brandName){
-        logger.info("delBrand call started.");
-        return brandService.deleteBrand(categoryName,subcategoryName,brandName);
-    }
 }

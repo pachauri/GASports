@@ -23,24 +23,17 @@ public class ProductHandler {
     @Autowired
     private ProductDetailsService productDetailsService;
 
-    @GetMapping(value = GET_PRODUCT)
+    @GetMapping(value = GET_PRODUCT_DETAILS)
     public APIResponse getProductDetails(@PathVariable String categoryName,@PathVariable String subcategoryName,
                                    @PathVariable String brandName,@PathVariable String productName){
         logger.info("getProductDetails call started.");
         return productDetailsService.getProductDetailsByName(categoryName,subcategoryName,brandName,productName);
     }
 
-    @GetMapping(value = GET_PRODUCTS)
+    @GetMapping(value = GET_PRODUCTS_DETAILS)
     public APIResponse getProductsDetails(@PathVariable String categoryName,@PathVariable String subcategoryName,
                                    @PathVariable String brandName){
         logger.info("getProductsDetails call started.");
         return productDetailsService.getAllProductsDetails(categoryName,subcategoryName,brandName);
-    }
-
-    @DeleteMapping(value = DELETE_PRODUCT)
-    public APIResponse delProduct(@PathVariable String categoryName, @PathVariable String subcategoryName,
-                                  @PathVariable String brandName,@PathVariable String productName){
-        logger.info("delProduct call started.");
-        return productDetailsService.deleteProduct(categoryName,subcategoryName,brandName,productName);
     }
 }

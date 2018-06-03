@@ -38,9 +38,5 @@ public class CategoryHandler {
         return categoryService.getAllCategories();
     }
 
-    @DeleteMapping(value = DELETE_CATEGORY)
-    public APIResponse delCategory(@PathVariable String categoryName){
-        logger.info("delCategory call started.");
-        return categoryService.deleteCategory(categoryName);
-    }
+
 }

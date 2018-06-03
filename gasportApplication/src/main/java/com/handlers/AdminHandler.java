@@ -5,7 +5,7 @@ import com.constants.GASportConstant;
 import com.dto.*;
 import com.response.APIResponse;
 import com.response.ErrorResponse;
-import com.service.ProductService;
+import com.service.*;
 import enums.ErrorCodes;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -16,7 +16,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.Mappings.ADD_CATEGORY;
+import static com.Mappings.*;
 
 /**
  * @author vipul pachauri
@@ -29,6 +29,18 @@ public class AdminHandler {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private CategoryService categoryService;
+
+    @Autowired
+    private SubCategoryService subCategoryService;
+
+    @Autowired
+    private BrandService brandService;
+
+    @Autowired
+    private ProductDetailsService productDetailsService;
 
     @PostMapping(ADD_CATEGORY)
     public APIResponse addCategory(@RequestBody CategoryDTO categoryDTO){
@@ -113,11 +125,29 @@ public class AdminHandler {
         return productService.addOrUpdateProductDetails(oldProductName,productDTO);
     }
 
-   // @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping(value = "/ga-sports/admin/user")
-    public void userDetails(){
-        logger.info("user info");
-        System.out.println("Success");
+    @DeleteMapping(value = DELETE_CATEGORY)
+    public APIResponse delCategory(@PathVariable String categoryName){
+        logger.info("delCategory call started.");
+        return categoryService.deleteCategory(categoryName);
+    }
+
+    @DeleteMapping(value = DELETE_SUB_CATEGORY)
+    public APIResponse delSubCategory(@PathVariable String categoryName, @PathVariable String subcategoryName){
+        logger.info("delSubCategory call started.");
+        return subCategoryService.deleteSubCategory(categoryName,subcategoryName);
+    }
+
+    @DeleteMapping(value = DELETE_BRAND)
+    public APIResponse delBrand(@PathVariable String categoryName, @PathVariable String subcategoryName, @PathVariable String brandName){
+        logger.info("delBrand call started.");
+        return brandService.deleteBrand(categoryName,subcategoryName,brandName);
+    }
+
+    @DeleteMapping(value = DELETE_PRODUCT_DETAILS)
+    public APIResponse delProduct(@PathVariable String categoryName, @PathVariable String subcategoryName,
+                                  @PathVariable String brandName,@PathVariable String productName){
+        logger.info("delProduct call started.");
+        return productDetailsService.deleteProduct(categoryName,subcategoryName,brandName,productName);
     }
 
 }
